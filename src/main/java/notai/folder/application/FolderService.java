@@ -19,4 +19,11 @@ public class FolderService {
         var folder = new Folder(member, folderSaveRequest.name());
         folderRepository.save(folder);
     }
+
+    public void saveSubFolder(Long memberId, Long parentFolderId, FolderSaveRequest folderSaveRequest) {
+        var member = memberRepository.getById(memberId);
+        var parentFolder = folderRepository.getById(parentFolderId);
+        var folder = new Folder(member, folderSaveRequest.name(), parentFolder);
+        folderRepository.save(folder);
+    }
 }
