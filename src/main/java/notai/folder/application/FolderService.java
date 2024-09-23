@@ -1,6 +1,7 @@
 package notai.folder.application;
 
 import lombok.RequiredArgsConstructor;
+import notai.common.exception.type.BadRequestException;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
 import notai.folder.presentation.request.FolderSaveRequest;
@@ -24,6 +25,15 @@ public class FolderService {
         var member = memberRepository.getById(memberId);
         var parentFolder = folderRepository.getById(parentFolderId);
         var folder = new Folder(member, folderSaveRequest.name(), parentFolder);
+        folderRepository.save(folder);
+    }
+
+    public void moveRootFolder(Long memberId, Long id) {
+        var folder = folderRepository.getById(id);
+        if (!folder.getMember().getId().equals(memberId)) {
+            throw new BadRequestException("올바르지 않은 요청입니다.");
+        }
+        folder.moveRootFolder();
         folderRepository.save(folder);
     }
 }
