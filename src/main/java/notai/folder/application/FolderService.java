@@ -36,4 +36,14 @@ public class FolderService {
         folder.moveRootFolder();
         folderRepository.save(folder);
     }
+
+    public void moveNewParentFolder(Long memberId, Long id, Long parentFolderId) {
+        var folder = folderRepository.getById(id);
+        var parentFolder = folderRepository.getById(parentFolderId);
+        if (!folder.getMember().getId().equals(memberId)) {
+            throw new BadRequestException("올바르지 않은 요청입니다.");
+        }
+        folder.moveNewParentFolder(parentFolder);
+        folderRepository.save(folder);
+    }
 }
