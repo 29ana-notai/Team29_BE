@@ -1,12 +1,13 @@
-package notai.aiTask.application;
+package notai.llm.application;
+
+import lombok.RequiredArgsConstructor;
+import notai.llm.application.command.LLMSubmitCommand;
+import notai.llm.domain.LLMRepository;
+import notai.llm.presentation.response.LLMSubmitResponse;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import notai.aiTask.application.command.AITaskCommand;
-import notai.aiTask.domain.AITaskRepository;
-import notai.aiTask.presentation.response.AITaskResponse;
-import org.springframework.stereotype.Service;
 
 /**
  * SummaryService 와 ExamService 는 엔티티와 관련된 로직만 처리하고
@@ -15,21 +16,21 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class AITaskService {
+public class LLMService {
 
-    private final AITaskRepository aiTaskRepository;
+    private final LLMRepository llmRepository;
 
     /**
      * 흐름 파악용 임시 메서드
      */
-    public AITaskResponse submitTask(AITaskCommand command) {
+    public LLMSubmitResponse submitTask(LLMSubmitCommand command) {
         command.pages().forEach(page -> {
             UUID taskId = sendRequestToAIServer();
             // TODO: command 데이터를 이용해 content 만 null 인 Summary, Problem 생성
-            // TODO: Summary, Problem 과 매핑된 AITask 생성 -> 작업 상태는 모두 PENDING
+            // TODO: Summary, Problem 과 매핑된 LLM 생성 -> 작업 상태는 모두 PENDING
         });
 
-        return AITaskResponse.of(command.documentId(), LocalDateTime.now());
+        return LLMSubmitResponse.of(command.documentId(), LocalDateTime.now());
     }
 
     private UUID sendRequestToAIServer() {
