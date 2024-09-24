@@ -2,8 +2,8 @@ package notai.llm.application;
 
 import lombok.RequiredArgsConstructor;
 import notai.llm.application.command.LLMSubmitCommand;
+import notai.llm.application.result.LLMSubmitResult;
 import notai.llm.domain.LLMRepository;
-import notai.llm.presentation.response.LLMSubmitResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,14 +23,14 @@ public class LLMService {
     /**
      * 흐름 파악용 임시 메서드
      */
-    public LLMSubmitResponse submitTask(LLMSubmitCommand command) {
+    public LLMSubmitResult submitTask(LLMSubmitCommand command) {
         command.pages().forEach(page -> {
             UUID taskId = sendRequestToAIServer();
             // TODO: command 데이터를 이용해 content 만 null 인 Summary, Problem 생성
             // TODO: Summary, Problem 과 매핑된 LLM 생성 -> 작업 상태는 모두 PENDING
         });
 
-        return LLMSubmitResponse.of(command.documentId(), LocalDateTime.now());
+        return LLMSubmitResult.of(command.documentId(), LocalDateTime.now());
     }
 
     private UUID sendRequestToAIServer() {
