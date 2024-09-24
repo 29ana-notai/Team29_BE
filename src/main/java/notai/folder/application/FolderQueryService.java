@@ -30,11 +30,10 @@ public class FolderQueryService {
                     ? ROOT_ID
                     : folder.getParentFolder().getId();
             var subFolders = subFolderMap.getOrDefault(parentFolderId, new ArrayList<>());
-            if (folder.getParentFolder() != null) {
-                subFolders.add(folder.getId());
-            }
+            subFolders.add(folder.getId());
             subFolderMap.put(parentFolderId, subFolders);
         }
+
         var result = new ArrayList<FolderResponse>();
         recursiveInsertFolder(ROOT_ID, subFolderMap, folderMap, result);
 
@@ -47,7 +46,7 @@ public class FolderQueryService {
             Map<Long, Folder> folderMap,
             List<FolderResponse> result
     ) {
-        var subFolders = subFolderMap.get(parentFolderId);
+        var subFolders = subFolderMap.getOrDefault(parentFolderId, new ArrayList<>());
 
         for (var subFolderId : subFolders) {
             var folder = folderMap.get(subFolderId);
@@ -55,7 +54,7 @@ public class FolderQueryService {
 
             result.add(folderResponse);
 
-            recursiveInsertFolder(subFolderId, subFolderMap, folderMap, result);
+            recursiveInsertFolder(subFolderId, subFolderMap, folderMap, folderResponse.subFolders());
         }
     }
 
