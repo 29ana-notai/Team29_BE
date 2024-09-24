@@ -51,7 +51,6 @@ public class FolderQueryService {
         for (var subFolderId : subFolders) {
             var folder = folderMap.get(subFolderId);
             var folderResponse = getFolderResponse(folder);
-
             result.add(folderResponse);
 
             recursiveInsertFolder(subFolderId, subFolderMap, folderMap, folderResponse.subFolders());
