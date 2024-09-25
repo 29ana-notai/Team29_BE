@@ -46,4 +46,13 @@ public class FolderService {
         folder.moveNewParentFolder(parentFolder);
         folderRepository.save(folder);
     }
+
+    public void deleteFolder(Long id) {
+        var subFolders = folderRepository.findAllByParentFolderId(id);
+        for (var folder : subFolders) {
+            deleteFolder(folder.getId());
+        }
+        // deleteDocument
+        folderRepository.deleteById(id);
+    }
 }
