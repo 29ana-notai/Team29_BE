@@ -7,9 +7,7 @@ import java.util.List;
 
 public interface FolderRepository extends JpaRepository<Folder, Long> {
     default Folder getById(Long id) {
-        return findById(id).orElseThrow(() ->
-                new NotFoundException("폴더 정보를 찾을 수 없습니다.")
-        );
+        return findById(id).orElseThrow(() -> new NotFoundException("폴더 정보를 찾을 수 없습니다."));
     }
 
     List<Folder> findAllByMemberIdOrderByIdAsc(Long memberId);

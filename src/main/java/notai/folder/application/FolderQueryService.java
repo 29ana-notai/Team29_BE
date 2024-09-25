@@ -26,9 +26,7 @@ public class FolderQueryService {
         var folderMap = new HashMap<Long, Folder>();
         for (var folder : folders) {
             folderMap.put(folder.getId(), folder);
-            var parentFolderId = folder.getParentFolder() == null
-                    ? ROOT_ID
-                    : folder.getParentFolder().getId();
+            var parentFolderId = folder.getParentFolder() == null ? ROOT_ID : folder.getParentFolder().getId();
             var subFolders = subFolderMap.getOrDefault(parentFolderId, new ArrayList<>());
             subFolders.add(folder.getId());
             subFolderMap.put(parentFolderId, subFolders);

@@ -1,12 +1,13 @@
 package notai.aiTask.application;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import notai.aiTask.application.command.AITaskCommand;
 import notai.aiTask.domain.AITaskRepository;
 import notai.aiTask.presentation.response.AITaskResponse;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * SummaryService 와 ExamService 는 엔티티와 관련된 로직만 처리하고

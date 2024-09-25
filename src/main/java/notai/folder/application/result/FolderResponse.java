@@ -9,10 +9,6 @@ public record FolderResponse(
         List<FolderResponse> subFolders
 ) {
     public static FolderResponse of(Long id, String name) {
-        return new FolderResponse(
-                id,
-                name,
-                new ArrayList<>()
-        );
+        return new FolderResponse(id, name, new ArrayList<>());
     }
 }

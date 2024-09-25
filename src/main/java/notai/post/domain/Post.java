@@ -1,19 +1,13 @@
 package notai.post.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import jakarta.validation.constraints.NotNull;
+import static lombok.AccessLevel.PROTECTED;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.member.domain.Member;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
@@ -25,7 +19,7 @@ public class Post {
     private Long id;
     @ManyToOne
     @NotNull
-    @JoinColumn(name="member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
     @NotNull
     @Column(length = 255)
@@ -35,9 +29,7 @@ public class Post {
     private String contents;
 
     public Post(
-            Member member,
-            String title,
-            String contents
+            Member member, String title, String contents
     ) {
         this.member = member;
         this.title = title;

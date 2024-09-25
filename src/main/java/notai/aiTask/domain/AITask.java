@@ -1,23 +1,15 @@
 package notai.aiTask.domain;
 
-import static lombok.AccessLevel.PROTECTED;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
+import static lombok.AccessLevel.PROTECTED;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.common.domain.RootEntity;
 import notai.problem.domain.Problem;
 import notai.summary.domain.Summary;
+
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
