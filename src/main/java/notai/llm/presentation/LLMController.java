@@ -8,6 +8,7 @@ import notai.llm.application.command.LLMSubmitCommand;
 import notai.llm.application.result.LLMStatusResult;
 import notai.llm.application.result.LLMSubmitResult;
 import notai.llm.presentation.request.LLMSubmitRequest;
+import notai.llm.presentation.response.LLMResultsResponse;
 import notai.llm.presentation.response.LLMStatusResponse;
 import notai.llm.presentation.response.LLMSubmitResponse;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +33,11 @@ public class LLMController {
     public ResponseEntity<LLMStatusResponse> fetchTaskStatus(@PathVariable("documentId") Long documentId) {
         LLMStatusResult result = llmQueryService.fetchTaskStatus(documentId);
         return ResponseEntity.ok(LLMStatusResponse.from(result));
+    }
+
+    @GetMapping("/results/{documentId}")
+    public ResponseEntity<LLMResultsResponse> findTaskResult(@PathVariable("documentId") Long documentId) {
+        LLMResultsResponse response = llmQueryService.findTaskResult(documentId);
+        return ResponseEntity.ok(response);
     }
 }
