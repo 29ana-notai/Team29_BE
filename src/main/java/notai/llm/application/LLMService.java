@@ -5,12 +5,16 @@ import notai.common.exception.type.NotFoundException;
 import notai.document.domain.Document;
 import notai.document.domain.DocumentRepository;
 import notai.llm.application.command.LLMSubmitCommand;
+import notai.llm.application.command.SummaryAndProblemUpdateCommand;
 import notai.llm.application.result.LLMSubmitResult;
 import notai.llm.domain.LLM;
 import notai.llm.domain.LLMRepository;
 import notai.problem.domain.Problem;
+import notai.problem.domain.ProblemRepository;
 import notai.summary.domain.Summary;
+import notai.summary.domain.SummaryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,11 +25,14 @@ import java.util.UUID;
  * AI 서버와의 통신은 별도 클래스에서 처리합니다.
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class LLMService {
 
     private final LLMRepository llmRepository;
     private final DocumentRepository documentRepository;
+    private final SummaryRepository summaryRepository;
+    private final ProblemRepository problemRepository;
 
     public LLMSubmitResult submitTask(LLMSubmitCommand command) {
         // TODO: document 개발 코드 올려주시면, getById 로 수정
@@ -42,6 +49,22 @@ public class LLMService {
         });
 
         return LLMSubmitResult.of(command.documentId(), LocalDateTime.now());
+    }
+
+    public Integer updateSummaryAndProblem(SummaryAndProblemUpdateCommand command) {
+        LLM taskRecord = llmRepository.getById(command.taskId());
+        Summary summary = summaryRepository.getById(taskRecord.getSummary().getId());
+        Problem problem = problemRepository.getById(taskRecord.getProblem().getId());
+
+        taskRecord.completeTask();
+        summary.updateContent(command.summary());
+        problem.updateContent(command.problem());
+
+        llmRepository.save(taskRecord);
+        summaryRepository.save(summary);
+        problemRepository.save(problem);
+
+        return command.pageNumber();
     }
 
     /**

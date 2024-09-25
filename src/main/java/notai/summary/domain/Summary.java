@@ -35,4 +35,8 @@ public class Summary extends RootEntity<Long> {
         this.document = document;
         this.pageNumber = pageNumber;
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }

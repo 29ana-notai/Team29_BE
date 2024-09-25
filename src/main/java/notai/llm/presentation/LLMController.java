@@ -5,12 +5,15 @@ import lombok.RequiredArgsConstructor;
 import notai.llm.application.LLMQueryService;
 import notai.llm.application.LLMService;
 import notai.llm.application.command.LLMSubmitCommand;
+import notai.llm.application.command.SummaryAndProblemUpdateCommand;
 import notai.llm.application.result.LLMStatusResult;
 import notai.llm.application.result.LLMSubmitResult;
 import notai.llm.presentation.request.LLMSubmitRequest;
+import notai.llm.presentation.request.SummaryAndProblemUpdateRequest;
 import notai.llm.presentation.response.LLMResultsResponse;
 import notai.llm.presentation.response.LLMStatusResponse;
 import notai.llm.presentation.response.LLMSubmitResponse;
+import notai.llm.presentation.response.SummaryAndProblemUpdateResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +40,14 @@ public class LLMController {
 
     @GetMapping("/results/{documentId}")
     public ResponseEntity<LLMResultsResponse> findTaskResult(@PathVariable("documentId") Long documentId) {
-        LLMResultsResponse response = llmQueryService.findTaskResult(documentId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(llmQueryService.findTaskResult(documentId));
+    }
+
+    @PostMapping("/callback")
+    public ResponseEntity<SummaryAndProblemUpdateResponse> handleTaskCallback(
+            @RequestBody @Valid SummaryAndProblemUpdateRequest request
+    ) {
+        SummaryAndProblemUpdateCommand command = request.toCommand();
+        return ResponseEntity.ok(SummaryAndProblemUpdateResponse.of(llmService.updateSummaryAndProblem(command)));
     }
 }

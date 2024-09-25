@@ -46,4 +46,8 @@ public class LLM extends RootEntity<UUID> {
         this.problem = problem;
         this.status = TaskStatus.PENDING;
     }
+
+    public void completeTask() {
+        this.status = TaskStatus.COMPLETED;
+    }
 }
