@@ -23,12 +23,18 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         String jwt = "JWT";
         SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
-        Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme().name(jwt).type(
-                SecurityScheme.Type.HTTP).scheme("bearer").description("토큰값을 입력하여 인증을 활성화할 수 있습니다.").bearerFormat("JWT"));
+        Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme().name(jwt)
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .description("토큰값을 입력하여 인증을 활성화할 수 있습니다.")
+                .bearerFormat("JWT"));
         Server server = new Server();
         server.setUrl(serverUrl);
-        return new OpenAPI().components(new Components()).info(apiInfo()).addSecurityItem(securityRequirement).components(
-                components).addServersItem(server);
+        return new OpenAPI().components(new Components())
+                .info(apiInfo())
+                .addSecurityItem(securityRequirement)
+                .components(components)
+                .addServersItem(server);
     }
 
     private Info apiInfo() {

@@ -1,8 +1,9 @@
 package notai.folder.domain;
 
 import jakarta.persistence.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
+import static lombok.AccessLevel.PROTECTED;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.common.domain.RootEntity;
@@ -11,15 +12,15 @@ import notai.member.domain.Member;
 @Entity
 @Table(name = "folder")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Folder extends RootEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne
     @NotNull
+    @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 

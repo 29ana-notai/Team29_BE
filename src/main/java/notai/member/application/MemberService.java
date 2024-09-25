@@ -14,6 +14,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public Long login(Member member) {
-        return memberRepository.findByOauthId(member.getOauthId()).orElseGet(() -> memberRepository.save(member)).getId();
+        return memberRepository.findByOauthId(member.getOauthId())
+                .orElseGet(() -> memberRepository.save(member))
+                .getId()
+                .longValue();
     }
 }

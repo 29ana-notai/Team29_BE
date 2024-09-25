@@ -1,8 +1,9 @@
 package notai.document.domain;
 
 import jakarta.persistence.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
+import static lombok.AccessLevel.PROTECTED;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.common.domain.RootEntity;
@@ -11,11 +12,11 @@ import notai.folder.domain.Folder;
 @Entity
 @Table(name = "document")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Document extends RootEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @NotNull

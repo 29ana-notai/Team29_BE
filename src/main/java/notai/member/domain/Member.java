@@ -2,6 +2,7 @@ package notai.member.domain;
 
 import jakarta.persistence.*;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import jakarta.validation.constraints.NotNull;
 import static lombok.AccessLevel.PROTECTED;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,13 +23,16 @@ public class Member extends RootEntity<Long> {
     @Embedded
     private OauthId oauthId;
 
-    @Column(length = 50, nullable = false)
+    @NotNull
+    @Column(length = 50)
     private String email;
 
-    @Column(length = 20, nullable = true)
+    @NotNull
+    @Column(length = 20)
     private String nickname;
 
-    @Column(length = 255, nullable = false)
+    @NotNull
+    @Column(length = 255)
     private String refreshToken;
 
     public Member(OauthId oauthId, String email, String nickname) {
