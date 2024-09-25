@@ -1,9 +1,15 @@
 package notai.llm.application;
 
 import lombok.RequiredArgsConstructor;
+import notai.common.exception.type.NotFoundException;
+import notai.document.domain.Document;
+import notai.document.domain.DocumentRepository;
 import notai.llm.application.command.LLMSubmitCommand;
 import notai.llm.application.result.LLMSubmitResult;
+import notai.llm.domain.LLM;
 import notai.llm.domain.LLMRepository;
+import notai.problem.domain.Problem;
+import notai.summary.domain.Summary;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,21 +25,29 @@ import java.util.UUID;
 public class LLMService {
 
     private final LLMRepository llmRepository;
+    private final DocumentRepository documentRepository;
 
-    /**
-     * 흐름 파악용 임시 메서드
-     */
     public LLMSubmitResult submitTask(LLMSubmitCommand command) {
-        command.pages().forEach(page -> {
+        // TODO: document 개발 코드 올려주시면, getById 로 수정
+        Document foundDocument =
+                documentRepository.findById(command.documentId()).orElseThrow(() -> new NotFoundException(""));
+
+        command.pages().forEach(pageNumber -> {
             UUID taskId = sendRequestToAIServer();
-            // TODO: command 데이터를 이용해 content 만 null 인 Summary, Problem 생성
-            // TODO: Summary, Problem 과 매핑된 LLM 생성 -> 작업 상태는 모두 PENDING
+            Summary summary = new Summary(foundDocument, pageNumber);
+            Problem problem = new Problem(foundDocument, pageNumber);
+
+            LLM llm = new LLM(taskId, summary, problem);
+            llmRepository.save(llm);
         });
 
         return LLMSubmitResult.of(command.documentId(), LocalDateTime.now());
     }
 
+    /**
+     * 임시 값 반환, 추후 AI 서버에서 작업 단위 UUID 가 반환됨.
+     */
     private UUID sendRequestToAIServer() {
-        return UUID.randomUUID(); // 임시 값, 실제 구현에선 AI 서버에서 UUID 가 반환됨.
+        return UUID.randomUUID();
     }
 }

@@ -2,7 +2,6 @@ package notai.llm.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import static lombok.AccessLevel.PROTECTED;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.common.domain.RootEntity;
@@ -10,6 +9,8 @@ import notai.problem.domain.Problem;
 import notai.summary.domain.Summary;
 
 import java.util.UUID;
+
+import static lombok.AccessLevel.PROTECTED;
 
 
 /**
@@ -25,12 +26,12 @@ public class LLM extends RootEntity<UUID> {
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "summary_id")
     private Summary summary;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
