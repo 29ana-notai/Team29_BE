@@ -7,10 +7,7 @@ import notai.common.exception.type.NotFoundException;
 import notai.document.domain.DocumentRepository;
 import notai.llm.application.result.LLMStatusResult;
 import notai.llm.domain.TaskStatus;
-import static notai.llm.domain.TaskStatus.COMPLETED;
-import static notai.llm.domain.TaskStatus.IN_PROGRESS;
 import notai.llm.presentation.response.LLMResultsResponse;
-import static notai.llm.presentation.response.LLMResultsResponse.Content;
 import notai.llm.presentation.response.LLMResultsResponse.Result;
 import notai.llm.query.LLMQueryRepository;
 import notai.problem.query.ProblemQueryRepository;
@@ -22,11 +19,15 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
+import static notai.llm.domain.TaskStatus.COMPLETED;
+import static notai.llm.domain.TaskStatus.IN_PROGRESS;
+import static notai.llm.presentation.response.LLMResultsResponse.Content;
+
 @Service
 @RequiredArgsConstructor
 public class LLMQueryService {
 
-    private final LLMQueryRepository LLMQueryRepository;
+    private final LLMQueryRepository llmQueryRepository;
     private final DocumentRepository documentRepository;
     private final SummaryQueryRepository summaryQueryRepository;
     private final ProblemQueryRepository problemQueryRepository;
@@ -69,8 +70,7 @@ public class LLMQueryService {
     }
 
     private static void checkSummaryAndProblemCountsEqual(
-            List<SummaryPageContentResult> summaryResults,
-            List<ProblemPageContentResult> problemResults
+            List<SummaryPageContentResult> summaryResults, List<ProblemPageContentResult> problemResults
     ) {
         if (summaryResults.size() != problemResults.size()) {
             throw new InternalServerErrorException("AI 요약 및 문제 생성 중에 문제가 발생했습니다."); // 요약 개수와 문제 개수가 불일치
@@ -86,14 +86,12 @@ public class LLMQueryService {
     }
 
     private List<TaskStatus> getTaskStatuses(List<Long> summaryIds) {
-        return summaryIds.stream()
-                .map(LLMQueryRepository::getTaskStatusBySummaryId)
-                .toList();
+        return summaryIds.stream().map(llmQueryRepository::getTaskStatusBySummaryId).toList();
     }
 
     private List<SummaryPageContentResult> getSummaryPageContentResults(Long documentId) {
-        List<SummaryPageContentResult> summaryResults =
-                summaryQueryRepository.getPageNumbersAndContentByDocumentId(documentId);
+        List<SummaryPageContentResult> summaryResults = summaryQueryRepository.getPageNumbersAndContentByDocumentId(
+                documentId);
         if (summaryResults.isEmpty()) {
             throw new BadRequestException("AI 기능을 요청한 기록이 없습니다.");
         }
@@ -105,10 +103,8 @@ public class LLMQueryService {
     }
 
     private String findProblemContentByPageNumber(List<ProblemPageContentResult> results, int pageNumber) {
-        return results.stream()
-                .filter(result -> result.pageNumber() == pageNumber)
-                .findFirst()
-                .map(ProblemPageContentResult::content)
-                .orElseThrow(() -> new InternalServerErrorException("AI 요약 및 문제 생성 중에 문제가 발생했습니다.")); // 요약 페이지와 문제 페이지가 불일치
+        return results.stream().filter(result -> result.pageNumber() == pageNumber).findFirst().map(
+                ProblemPageContentResult::content).orElseThrow(() -> new InternalServerErrorException(
+                "AI 요약 및 문제 생성 중에 문제가 발생했습니다.")); // 요약 페이지와 문제 페이지가 불일치
     }
 }
