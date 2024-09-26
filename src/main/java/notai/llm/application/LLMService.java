@@ -44,8 +44,8 @@ public class LLMService {
             Summary summary = new Summary(foundDocument, pageNumber);
             Problem problem = new Problem(foundDocument, pageNumber);
 
-            LLM llm = new LLM(taskId, summary, problem);
-            llmRepository.save(llm);
+            LLM taskRecord = new LLM(taskId, summary, problem);
+            llmRepository.save(taskRecord);
         });
 
         return LLMSubmitResult.of(command.documentId(), LocalDateTime.now());
@@ -53,16 +53,16 @@ public class LLMService {
 
     public Integer updateSummaryAndProblem(SummaryAndProblemUpdateCommand command) {
         LLM taskRecord = llmRepository.getById(command.taskId());
-        Summary summary = summaryRepository.getById(taskRecord.getSummary().getId());
-        Problem problem = problemRepository.getById(taskRecord.getProblem().getId());
+        Summary foundSummary = summaryRepository.getById(taskRecord.getSummary().getId());
+        Problem foundProblem = problemRepository.getById(taskRecord.getProblem().getId());
 
         taskRecord.completeTask();
-        summary.updateContent(command.summary());
-        problem.updateContent(command.problem());
+        foundSummary.updateContent(command.summary());
+        foundProblem.updateContent(command.problem());
 
         llmRepository.save(taskRecord);
-        summaryRepository.save(summary);
-        problemRepository.save(problem);
+        summaryRepository.save(foundSummary);
+        problemRepository.save(foundProblem);
 
         return command.pageNumber();
     }
