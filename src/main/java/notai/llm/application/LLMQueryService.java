@@ -93,7 +93,7 @@ public class LLMQueryService {
         List<SummaryPageContentResult> summaryResults = summaryQueryRepository.getPageNumbersAndContentByDocumentId(
                 documentId);
         if (summaryResults.isEmpty()) {
-            throw new BadRequestException("AI 기능을 요청한 기록이 없습니다.");
+            throw new NotFoundException("AI 기능을 요청한 기록이 없습니다.");
         }
         return summaryResults;
     }

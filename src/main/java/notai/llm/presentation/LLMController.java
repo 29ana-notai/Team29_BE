@@ -49,6 +49,6 @@ public class LLMController {
     ) {
         SummaryAndProblemUpdateCommand command = request.toCommand();
         Integer receivedPage = llmService.updateSummaryAndProblem(command);
-        return ResponseEntity.ok(SummaryAndProblemUpdateResponse.of(receivedPage));
+        return ResponseEntity.ok(SummaryAndProblemUpdateResponse.from(receivedPage));
     }
 }
