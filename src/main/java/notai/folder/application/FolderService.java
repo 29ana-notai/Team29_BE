@@ -48,11 +48,9 @@ public class FolderService {
     }
 
     public void deleteFolder(Long id) {
-        var subFolders = folderRepository.findAllByParentFolderId(id);
-        for (var folder : subFolders) {
-            deleteFolder(folder.getId());
+        if (!folderRepository.existsById(id)) {
+            throw new BadRequestException("올바르지 않은 요청입니다.");
         }
-        // deleteDocument
         folderRepository.deleteById(id);
     }
 }
