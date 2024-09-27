@@ -11,12 +11,10 @@ import notai.folder.presentation.request.FolderSaveRequest;
 import notai.folder.presentation.response.FolderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/folders")
@@ -50,5 +48,14 @@ public class FolderController {
             folderService.moveRootFolder(memberId, id);
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FolderResponse>> getFolders(
+            @Auth Long memberId, @RequestParam(required = false) Long parentFolderId
+    ) {
+        var folderResults = folderQueryService.getFolders(memberId, parentFolderId);
+        var response = folderResults.stream().map(FolderResponse::from).toList();
+        return ResponseEntity.ok(response);
     }
 }
