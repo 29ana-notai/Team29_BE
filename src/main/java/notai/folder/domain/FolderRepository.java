@@ -10,7 +10,7 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
         return findById(id).orElseThrow(() -> new NotFoundException("폴더 정보를 찾을 수 없습니다."));
     }
 
-    List<Folder> findAllByMemberIdOrderByIdAsc(Long memberId);
+    List<Folder> findAllByMemberIdAndParentFolderIsNull(Long memberId);
 
-    List<Folder> findAllByParentFolderId(Long id);
+    List<Folder> findAllByMemberIdAndParentFolderId(Long memberId, Long parentFolderId);
 }
