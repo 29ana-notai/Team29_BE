@@ -9,6 +9,7 @@ import notai.folder.presentation.request.FolderSaveRequest;
 import notai.folder.presentation.response.FolderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,17 @@ public class FolderController {
             @Auth Long memberId, @Valid @RequestBody FolderSaveRequest folderSaveRequest
     ) {
         var result = folderService.saveRootFolder(memberId, folderSaveRequest);
+        var response = FolderResponse.from(result);
+        return ResponseEntity.created(URI.create("/api/folders/" + response.id())).body(response);
+    }
+
+    @PostMapping("/{parentFolderId}")
+    public ResponseEntity<FolderResponse> saveSubFolder(
+            @Auth Long memberId,
+            @PathVariable Long parentFolderId,
+            @Valid @RequestBody FolderSaveRequest folderSaveRequest
+    ) {
+        var result = folderService.saveSubFolder(memberId, parentFolderId, folderSaveRequest);
         var response = FolderResponse.from(result);
         return ResponseEntity.created(URI.create("/api/folders/" + response.id())).body(response);
     }
