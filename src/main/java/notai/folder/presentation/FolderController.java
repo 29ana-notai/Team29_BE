@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import notai.auth.Auth;
 import notai.folder.application.FolderQueryService;
 import notai.folder.application.FolderService;
+import notai.folder.presentation.request.FolderMoveRequest;
 import notai.folder.presentation.request.FolderSaveRequest;
 import notai.folder.presentation.response.FolderResponse;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,21 @@ public class FolderController {
         var result = folderService.saveSubFolder(memberId, parentFolderId, folderSaveRequest);
         var response = FolderResponse.from(result);
         return ResponseEntity.created(URI.create("/api/folders/" + response.id())).body(response);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<FolderResponse> moveRootFolder(
+            @Auth Long memberId, @PathVariable Long id
+    ) {
+        folderService.moveRootFolder(memberId, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<FolderResponse> moveRootFolder(
+            @Auth Long memberId, @PathVariable Long id, @Valid @RequestBody FolderMoveRequest folderMoveRequest
+    ) {
+        folderService.moveNewParentFolder(memberId, id, folderMoveRequest);
+        return ResponseEntity.ok().build();
     }
 }

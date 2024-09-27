@@ -5,6 +5,7 @@ import notai.common.exception.type.BadRequestException;
 import notai.folder.application.result.FolderResult;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
+import notai.folder.presentation.request.FolderMoveRequest;
 import notai.folder.presentation.request.FolderSaveRequest;
 import notai.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -40,9 +41,9 @@ public class FolderService {
         folderRepository.save(folder);
     }
 
-    public void moveNewParentFolder(Long memberId, Long id, Long parentFolderId) {
+    public void moveNewParentFolder(Long memberId, Long id, FolderMoveRequest folderMoveRequest) {
         var folder = folderRepository.getById(id);
-        var parentFolder = folderRepository.getById(parentFolderId);
+        var parentFolder = folderRepository.getById(folderMoveRequest.targetFolderId());
         if (!folder.getMember().getId().equals(memberId)) {
             throw new BadRequestException("올바르지 않은 요청입니다.");
         }
