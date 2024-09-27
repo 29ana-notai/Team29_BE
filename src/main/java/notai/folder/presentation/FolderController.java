@@ -25,7 +25,7 @@ public class FolderController {
     private final FolderQueryService folderQueryService;
 
     @PostMapping
-    public ResponseEntity<FolderResponse> saveRootFolder(
+    public ResponseEntity<FolderResponse> saveFolder(
             @Auth Long memberId, @Valid @RequestBody FolderSaveRequest folderSaveRequest
     ) {
         FolderResult folderResult;
