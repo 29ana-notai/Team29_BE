@@ -2,6 +2,7 @@ package notai.folder.application;
 
 import lombok.RequiredArgsConstructor;
 import notai.common.exception.type.BadRequestException;
+import notai.folder.application.result.FolderResult;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
 import notai.folder.presentation.request.FolderSaveRequest;
@@ -15,17 +16,19 @@ public class FolderService {
     private final FolderRepository folderRepository;
     private final MemberRepository memberRepository;
 
-    public void saveRootFolder(Long memberId, FolderSaveRequest folderSaveRequest) {
+    public FolderResult saveRootFolder(Long memberId, FolderSaveRequest folderSaveRequest) {
         var member = memberRepository.getById(memberId);
         var folder = new Folder(member, folderSaveRequest.name());
-        folderRepository.save(folder);
+        var savedFolder = folderRepository.save(folder);
+        return getFolderResult(savedFolder);
     }
 
-    public void saveSubFolder(Long memberId, Long parentFolderId, FolderSaveRequest folderSaveRequest) {
+    public FolderResult saveSubFolder(Long memberId, Long parentFolderId, FolderSaveRequest folderSaveRequest) {
         var member = memberRepository.getById(memberId);
         var parentFolder = folderRepository.getById(parentFolderId);
         var folder = new Folder(member, folderSaveRequest.name(), parentFolder);
-        folderRepository.save(folder);
+        var savedFolder = folderRepository.save(folder);
+        return getFolderResult(savedFolder);
     }
 
     public void moveRootFolder(Long memberId, Long id) {
@@ -52,5 +55,10 @@ public class FolderService {
             throw new BadRequestException("올바르지 않은 요청입니다.");
         }
         folderRepository.deleteById(id);
+    }
+
+    private FolderResult getFolderResult(Folder folder) {
+        var parentFolderId = folder.getParentFolder() != null ? folder.getParentFolder().getId() : null;
+        return FolderResult.of(folder.getId(), parentFolderId, folder.getName());
     }
 }
