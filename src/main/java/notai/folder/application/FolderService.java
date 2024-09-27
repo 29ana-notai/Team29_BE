@@ -24,9 +24,9 @@ public class FolderService {
         return getFolderResult(savedFolder);
     }
 
-    public FolderResult saveSubFolder(Long memberId, Long parentFolderId, FolderSaveRequest folderSaveRequest) {
+    public FolderResult saveSubFolder(Long memberId, FolderSaveRequest folderSaveRequest) {
         var member = memberRepository.getById(memberId);
-        var parentFolder = folderRepository.getById(parentFolderId);
+        var parentFolder = folderRepository.getById(folderSaveRequest.parentFolderId());
         var folder = new Folder(member, folderSaveRequest.name(), parentFolder);
         var savedFolder = folderRepository.save(folder);
         return getFolderResult(savedFolder);

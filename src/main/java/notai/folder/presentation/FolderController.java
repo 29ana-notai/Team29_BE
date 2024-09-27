@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import notai.auth.Auth;
 import notai.folder.application.FolderQueryService;
 import notai.folder.application.FolderService;
+import notai.folder.application.result.FolderResult;
 import notai.folder.presentation.request.FolderMoveRequest;
 import notai.folder.presentation.request.FolderSaveRequest;
 import notai.folder.presentation.response.FolderResponse;
@@ -29,35 +30,25 @@ public class FolderController {
     public ResponseEntity<FolderResponse> saveRootFolder(
             @Auth Long memberId, @Valid @RequestBody FolderSaveRequest folderSaveRequest
     ) {
-        var result = folderService.saveRootFolder(memberId, folderSaveRequest);
-        var response = FolderResponse.from(result);
+        FolderResult folderResult;
+        if (folderSaveRequest.parentFolderId() != null) {
+            folderResult = folderService.saveSubFolder(memberId, folderSaveRequest);
+        } else {
+            folderResult = folderService.saveRootFolder(memberId, folderSaveRequest);
+        }
+        var response = FolderResponse.from(folderResult);
         return ResponseEntity.created(URI.create("/api/folders/" + response.id())).body(response);
     }
 
-    @PostMapping("/{parentFolderId}")
-    public ResponseEntity<FolderResponse> saveSubFolder(
-            @Auth Long memberId,
-            @PathVariable Long parentFolderId,
-            @Valid @RequestBody FolderSaveRequest folderSaveRequest
-    ) {
-        var result = folderService.saveSubFolder(memberId, parentFolderId, folderSaveRequest);
-        var response = FolderResponse.from(result);
-        return ResponseEntity.created(URI.create("/api/folders/" + response.id())).body(response);
-    }
-
-    @PostMapping("/{id}")
-    public ResponseEntity<FolderResponse> moveRootFolder(
-            @Auth Long memberId, @PathVariable Long id
-    ) {
-        folderService.moveRootFolder(memberId, id);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{id}")
-    public ResponseEntity<FolderResponse> moveRootFolder(
+    @PostMapping("/{id}/move")
+    public ResponseEntity<FolderResponse> moveFolder(
             @Auth Long memberId, @PathVariable Long id, @Valid @RequestBody FolderMoveRequest folderMoveRequest
     ) {
-        folderService.moveNewParentFolder(memberId, id, folderMoveRequest);
+        if (folderMoveRequest.targetFolderId() != null) {
+            folderService.moveNewParentFolder(memberId, id, folderMoveRequest);
+        } else {
+            folderService.moveRootFolder(memberId, id);
+        }
         return ResponseEntity.ok().build();
     }
 }
