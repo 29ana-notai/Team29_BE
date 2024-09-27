@@ -6,6 +6,7 @@ import notai.llm.application.LLMQueryService;
 import notai.llm.application.LLMService;
 import notai.llm.application.command.LLMSubmitCommand;
 import notai.llm.application.command.SummaryAndProblemUpdateCommand;
+import notai.llm.application.result.LLMResultsResult;
 import notai.llm.application.result.LLMStatusResult;
 import notai.llm.application.result.LLMSubmitResult;
 import notai.llm.presentation.request.LLMSubmitRequest;
@@ -40,7 +41,8 @@ public class LLMController {
 
     @GetMapping("/results/{documentId}")
     public ResponseEntity<LLMResultsResponse> findTaskResult(@PathVariable("documentId") Long documentId) {
-        return ResponseEntity.ok(llmQueryService.findTaskResult(documentId));
+        LLMResultsResult result = llmQueryService.findTaskResult(documentId);
+        return ResponseEntity.ok(LLMResultsResponse.of(result));
     }
 
     @PostMapping("/callback")

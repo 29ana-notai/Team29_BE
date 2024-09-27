@@ -5,10 +5,11 @@ import notai.common.exception.type.BadRequestException;
 import notai.common.exception.type.InternalServerErrorException;
 import notai.common.exception.type.NotFoundException;
 import notai.document.domain.DocumentRepository;
+import notai.llm.application.result.LLMResultsResult;
+import notai.llm.application.result.LLMResultsResult.LLMContent;
+import notai.llm.application.result.LLMResultsResult.LLMResult;
 import notai.llm.application.result.LLMStatusResult;
 import notai.llm.domain.TaskStatus;
-import notai.llm.presentation.response.LLMResultsResponse;
-import notai.llm.presentation.response.LLMResultsResponse.Result;
 import notai.llm.query.LLMQueryRepository;
 import notai.problem.query.ProblemQueryRepository;
 import notai.problem.query.result.ProblemPageContentResult;
@@ -21,7 +22,6 @@ import java.util.List;
 
 import static notai.llm.domain.TaskStatus.COMPLETED;
 import static notai.llm.domain.TaskStatus.IN_PROGRESS;
-import static notai.llm.presentation.response.LLMResultsResponse.Content;
 
 @Service
 @RequiredArgsConstructor
@@ -46,21 +46,21 @@ public class LLMQueryService {
         return LLMStatusResult.of(documentId, IN_PROGRESS, totalPages, completedPages);
     }
 
-    public LLMResultsResponse findTaskResult(Long documentId) {
+    public LLMResultsResult findTaskResult(Long documentId) {
         checkDocumentExists(documentId);
         List<SummaryPageContentResult> summaryResults = getSummaryPageContentResults(documentId);
         List<ProblemPageContentResult> problemResults = getProblemPageContentResults(documentId);
         checkSummaryAndProblemCountsEqual(summaryResults, problemResults);
 
-        List<Result> results = summaryResults.stream().map(summaryResult -> {
-            Content content = Content.of(
+        List<LLMResult> results = summaryResults.stream().map(summaryResult -> {
+            LLMContent content = LLMContent.of(
                     summaryResult.content(),
                     findProblemContentByPageNumber(problemResults, summaryResult.pageNumber())
             );
-            return Result.of(summaryResult.pageNumber(), content);
+            return LLMResult.of(summaryResult.pageNumber(), content);
         }).toList();
 
-        return LLMResultsResponse.of(documentId, results);
+        return LLMResultsResult.of(documentId, results);
     }
 
     private void checkDocumentExists(Long documentId) {
