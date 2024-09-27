@@ -28,12 +28,7 @@ public class FolderController {
     public ResponseEntity<FolderResponse> saveFolder(
             @Auth Long memberId, @Valid @RequestBody FolderSaveRequest folderSaveRequest
     ) {
-        FolderResult folderResult;
-        if (folderSaveRequest.parentFolderId() != null) {
-            folderResult = folderService.saveSubFolder(memberId, folderSaveRequest);
-        } else {
-            folderResult = folderService.saveRootFolder(memberId, folderSaveRequest);
-        }
+        var folderResult = saveFolderResult(memberId, folderSaveRequest);
         var response = FolderResponse.from(folderResult);
         return ResponseEntity.created(URI.create("/api/folders/" + response.id())).body(response);
     }
@@ -42,11 +37,7 @@ public class FolderController {
     public ResponseEntity<FolderResponse> moveFolder(
             @Auth Long memberId, @PathVariable Long id, @Valid @RequestBody FolderMoveRequest folderMoveRequest
     ) {
-        if (folderMoveRequest.targetFolderId() != null) {
-            folderService.moveNewParentFolder(memberId, id, folderMoveRequest);
-        } else {
-            folderService.moveRootFolder(memberId, id);
-        }
+        moveFolderWithRequest(memberId, id, folderMoveRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -65,5 +56,20 @@ public class FolderController {
     ) {
         folderService.deleteFolder(memberId, id);
         return ResponseEntity.noContent().build();
+    }
+
+    private FolderResult saveFolderResult(Long memberId, FolderSaveRequest folderSaveRequest) {
+        if (folderSaveRequest.parentFolderId() != null) {
+            return folderService.saveSubFolder(memberId, folderSaveRequest);
+        }
+        return folderService.saveRootFolder(memberId, folderSaveRequest);
+    }
+
+    private void moveFolderWithRequest(Long memberId, Long id, FolderMoveRequest folderMoveRequest) {
+        if (folderMoveRequest.targetFolderId() != null) {
+            folderService.moveNewParentFolder(memberId, id, folderMoveRequest);
+            return;
+        }
+        folderService.moveRootFolder(memberId, id);
     }
 }
