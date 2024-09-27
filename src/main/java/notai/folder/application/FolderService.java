@@ -51,8 +51,8 @@ public class FolderService {
         folderRepository.save(folder);
     }
 
-    public void deleteFolder(Long id) {
-        if (!folderRepository.existsById(id)) {
+    public void deleteFolder(Long memberId, Long id) {
+        if (!folderRepository.existsByMemberIdAndId(memberId, id)) {
             throw new BadRequestException("올바르지 않은 요청입니다.");
         }
         folderRepository.deleteById(id);

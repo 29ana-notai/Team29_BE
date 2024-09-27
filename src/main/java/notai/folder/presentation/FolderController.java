@@ -58,4 +58,12 @@ public class FolderController {
         var response = folderResults.stream().map(FolderResponse::from).toList();
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<List<FolderResponse>> deleteFolder(
+            @Auth Long memberId, @PathVariable Long id
+    ) {
+        folderService.deleteFolder(memberId, id);
+        return ResponseEntity.noContent().build();
+    }
 }

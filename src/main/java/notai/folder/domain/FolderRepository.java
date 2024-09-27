@@ -13,4 +13,6 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
     List<Folder> findAllByMemberIdAndParentFolderIsNull(Long memberId);
 
     List<Folder> findAllByMemberIdAndParentFolderId(Long memberId, Long parentFolderId);
+
+    boolean existsByMemberIdAndId(Long memberId, Long id);
 }
