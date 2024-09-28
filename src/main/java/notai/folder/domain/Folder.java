@@ -7,6 +7,7 @@ import static lombok.AccessLevel.PROTECTED;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.common.domain.RootEntity;
+import notai.common.exception.type.BadRequestException;
 import notai.member.domain.Member;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -52,5 +53,11 @@ public class Folder extends RootEntity<Long> {
 
     public void moveNewParentFolder(Folder parentFolder) {
         this.parentFolder = parentFolder;
+    }
+
+    public void validateOwner(Long memberId) {
+        if (!this.member.getId().equals(memberId)) {
+            throw new BadRequestException("해당 이용자는 이 폴더에 접근할 수 없습니다.");
+        }
     }
 }

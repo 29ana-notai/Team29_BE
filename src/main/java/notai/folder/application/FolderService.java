@@ -36,9 +36,7 @@ public class FolderService {
 
     public FolderMoveResult moveRootFolder(Long memberId, Long id) {
         Folder folder = folderRepository.getById(id);
-        if (!folder.getMember().getId().equals(memberId)) {
-            throw new BadRequestException("올바르지 않은 요청입니다.");
-        }
+        folder.validateOwner(memberId);
         folder.moveRootFolder();
         folderRepository.save(folder);
         return getFolderMoveResult(folder);
@@ -47,9 +45,7 @@ public class FolderService {
     public FolderMoveResult moveNewParentFolder(Long memberId, Long id, FolderMoveRequest folderMoveRequest) {
         Folder folder = folderRepository.getById(id);
         Folder parentFolder = folderRepository.getById(folderMoveRequest.targetFolderId());
-        if (!folder.getMember().getId().equals(memberId)) {
-            throw new BadRequestException("올바르지 않은 요청입니다.");
-        }
+        folder.validateOwner(memberId);
         folder.moveNewParentFolder(parentFolder);
         folderRepository.save(folder);
         return getFolderMoveResult(folder);
