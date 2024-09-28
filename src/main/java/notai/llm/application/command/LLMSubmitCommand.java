@@ -1,8 +1,8 @@
-package notai.aiTask.application.command;
+package notai.llm.application.command;
 
 import java.util.List;
 
-public record AITaskCommand(
+public record LLMSubmitCommand(
         Long documentId,
         List<Integer> pages
 ) {
