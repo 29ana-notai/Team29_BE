@@ -15,7 +15,7 @@ public class FolderQueryService {
     private final FolderRepository folderRepository;
 
     public List<FolderFindResult> getFolders(Long memberId, Long parentFolderId) {
-        var folders = getFoldersWithMemberAndParent(memberId, parentFolderId);
+        List<Folder> folders = getFoldersWithMemberAndParent(memberId, parentFolderId);
         // document read
         return folders.stream().map(this::getFolderResult).toList();
     }
@@ -28,7 +28,7 @@ public class FolderQueryService {
     }
 
     private FolderFindResult getFolderResult(Folder folder) {
-        var parentFolderId = folder.getParentFolder() != null ? folder.getParentFolder().getId() : null;
+        Long parentFolderId = folder.getParentFolder() != null ? folder.getParentFolder().getId() : null;
         return FolderFindResult.of(folder.getId(), parentFolderId, folder.getName());
     }
 }

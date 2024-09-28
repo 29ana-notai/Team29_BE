@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import notai.auth.Auth;
 import notai.folder.application.FolderQueryService;
 import notai.folder.application.FolderService;
+import notai.folder.application.result.FolderFindResult;
 import notai.folder.application.result.FolderMoveResult;
 import notai.folder.application.result.FolderSaveResult;
 import notai.folder.presentation.request.FolderMoveRequest;
@@ -31,8 +32,8 @@ public class FolderController {
     public ResponseEntity<FolderSaveResponse> saveFolder(
             @Auth Long memberId, @Valid @RequestBody FolderSaveRequest folderSaveRequest
     ) {
-        var folderResult = saveFolderResult(memberId, folderSaveRequest);
-        var response = FolderSaveResponse.from(folderResult);
+        FolderSaveResult folderResult = saveFolderResult(memberId, folderSaveRequest);
+        FolderSaveResponse response = FolderSaveResponse.from(folderResult);
         return ResponseEntity.created(URI.create("/api/folders/" + response.id())).body(response);
     }
 
@@ -40,8 +41,8 @@ public class FolderController {
     public ResponseEntity<FolderMoveResponse> moveFolder(
             @Auth Long memberId, @PathVariable Long id, @Valid @RequestBody FolderMoveRequest folderMoveRequest
     ) {
-        var folderResult = moveFolderWithRequest(memberId, id, folderMoveRequest);
-        var response = FolderMoveResponse.from(folderResult);
+        FolderMoveResult folderResult = moveFolderWithRequest(memberId, id, folderMoveRequest);
+        FolderMoveResponse response = FolderMoveResponse.from(folderResult);
         return ResponseEntity.ok(response);
     }
 
@@ -49,8 +50,8 @@ public class FolderController {
     public ResponseEntity<List<FolderFindResponse>> getFolders(
             @Auth Long memberId, @RequestParam(required = false) Long parentFolderId
     ) {
-        var folderResults = folderQueryService.getFolders(memberId, parentFolderId);
-        var response = folderResults.stream().map(FolderFindResponse::from).toList();
+        List<FolderFindResult> folderResults = folderQueryService.getFolders(memberId, parentFolderId);
+        List<FolderFindResponse> response = folderResults.stream().map(FolderFindResponse::from).toList();
         return ResponseEntity.ok(response);
     }
 
