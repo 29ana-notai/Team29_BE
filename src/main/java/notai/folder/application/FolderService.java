@@ -2,7 +2,8 @@ package notai.folder.application;
 
 import lombok.RequiredArgsConstructor;
 import notai.common.exception.type.BadRequestException;
-import notai.folder.application.result.FolderResult;
+import notai.folder.application.result.FolderMoveResult;
+import notai.folder.application.result.FolderSaveResult;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
 import notai.folder.presentation.request.FolderMoveRequest;
@@ -17,31 +18,32 @@ public class FolderService {
     private final FolderRepository folderRepository;
     private final MemberRepository memberRepository;
 
-    public FolderResult saveRootFolder(Long memberId, FolderSaveRequest folderSaveRequest) {
+    public FolderSaveResult saveRootFolder(Long memberId, FolderSaveRequest folderSaveRequest) {
         var member = memberRepository.getById(memberId);
         var folder = new Folder(member, folderSaveRequest.name());
         var savedFolder = folderRepository.save(folder);
-        return getFolderResult(savedFolder);
+        return getFolderSaveResult(savedFolder);
     }
 
-    public FolderResult saveSubFolder(Long memberId, FolderSaveRequest folderSaveRequest) {
+    public FolderSaveResult saveSubFolder(Long memberId, FolderSaveRequest folderSaveRequest) {
         var member = memberRepository.getById(memberId);
         var parentFolder = folderRepository.getById(folderSaveRequest.parentFolderId());
         var folder = new Folder(member, folderSaveRequest.name(), parentFolder);
         var savedFolder = folderRepository.save(folder);
-        return getFolderResult(savedFolder);
+        return getFolderSaveResult(savedFolder);
     }
 
-    public void moveRootFolder(Long memberId, Long id) {
+    public FolderMoveResult moveRootFolder(Long memberId, Long id) {
         var folder = folderRepository.getById(id);
         if (!folder.getMember().getId().equals(memberId)) {
             throw new BadRequestException("올바르지 않은 요청입니다.");
         }
         folder.moveRootFolder();
         folderRepository.save(folder);
+        return getFolderMoveResult(folder);
     }
 
-    public void moveNewParentFolder(Long memberId, Long id, FolderMoveRequest folderMoveRequest) {
+    public FolderMoveResult moveNewParentFolder(Long memberId, Long id, FolderMoveRequest folderMoveRequest) {
         var folder = folderRepository.getById(id);
         var parentFolder = folderRepository.getById(folderMoveRequest.targetFolderId());
         if (!folder.getMember().getId().equals(memberId)) {
@@ -49,6 +51,7 @@ public class FolderService {
         }
         folder.moveNewParentFolder(parentFolder);
         folderRepository.save(folder);
+        return getFolderMoveResult(folder);
     }
 
     public void deleteFolder(Long memberId, Long id) {
@@ -58,8 +61,12 @@ public class FolderService {
         folderRepository.deleteById(id);
     }
 
-    private FolderResult getFolderResult(Folder folder) {
+    private FolderSaveResult getFolderSaveResult(Folder folder) {
         var parentFolderId = folder.getParentFolder() != null ? folder.getParentFolder().getId() : null;
-        return FolderResult.of(folder.getId(), parentFolderId, folder.getName());
+        return FolderSaveResult.of(folder.getId(), parentFolderId, folder.getName());
+    }
+
+    private FolderMoveResult getFolderMoveResult(Folder folder) {
+        return FolderMoveResult.of(folder.getId(), folder.getName());
     }
 }
