@@ -3,15 +3,15 @@ package notai.document.presentation;
 import lombok.RequiredArgsConstructor;
 import notai.document.application.DocumentService;
 import notai.document.application.result.DocumentSaveResult;
+import notai.document.application.result.DocumentUpdateResult;
 import notai.document.presentation.request.DocumentSaveRequest;
+import notai.document.presentation.request.DocumentUpdateRequest;
 import notai.document.presentation.response.DocumentSaveResponse;
+import notai.document.presentation.response.DocumentUpdateResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
@@ -33,5 +33,14 @@ public class DocumentController {
         DocumentSaveResponse response = DocumentSaveResponse.from(documentSaveResult);
         String url = String.format("/api/folders/%s/documents/%s", folderId, response.id());
         return ResponseEntity.created(URI.create(url)).body(response);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<DocumentUpdateResponse> updateDocument(
+            @PathVariable Long folderId, @PathVariable Long id, @RequestBody DocumentUpdateRequest documentUpdateRequest
+    ) {
+        DocumentUpdateResult documentUpdateResult = documentService.updateDocument(folderId, id, documentUpdateRequest);
+        DocumentUpdateResponse response = DocumentUpdateResponse.from(documentUpdateResult);
+        return ResponseEntity.ok(response);
     }
 }

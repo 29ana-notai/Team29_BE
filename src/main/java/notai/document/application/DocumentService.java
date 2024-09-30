@@ -2,9 +2,11 @@ package notai.document.application;
 
 import lombok.RequiredArgsConstructor;
 import notai.document.application.result.DocumentSaveResult;
+import notai.document.application.result.DocumentUpdateResult;
 import notai.document.domain.Document;
 import notai.document.domain.DocumentRepository;
 import notai.document.presentation.request.DocumentSaveRequest;
+import notai.document.presentation.request.DocumentUpdateRequest;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,16 @@ public class DocumentService {
         Document document = new Document(folder, documentSaveRequest.name(), pdfUrl);
         Document savedDocument = documentRepository.save(document);
         return DocumentSaveResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
+    }
+
+    public DocumentUpdateResult updateDocument(
+            Long folderId, Long documentId, DocumentUpdateRequest documentUpdateRequest
+    ) {
+        Document document = documentRepository.getById(documentId);
+        document.validateDocument(folderId);
+        document.updateName(documentUpdateRequest.name());
+        Document savedDocument = documentRepository.save(document);
+        return DocumentUpdateResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
     }
 
     private String convertPdfUrl(String pdfName) {

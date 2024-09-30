@@ -7,6 +7,7 @@ import static lombok.AccessLevel.PROTECTED;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.common.domain.RootEntity;
+import notai.common.exception.type.NotFoundException;
 import notai.folder.domain.Folder;
 
 @Entity
@@ -36,5 +37,15 @@ public class Document extends RootEntity<Long> {
         this.folder = folder;
         this.name = name;
         this.url = url;
+    }
+
+    public void validateDocument(Long folderId) {
+        if (!this.folder.getId().equals(folderId)) {
+            throw new NotFoundException("해당 폴더 내에 존재하지 않는 자료입니다.");
+        }
+    }
+
+    public void updateName(String name) {
+        this.name = name;
     }
 }
