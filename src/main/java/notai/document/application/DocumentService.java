@@ -49,6 +49,12 @@ public class DocumentService {
         documentRepository.delete(document);
     }
 
+    public void deleteAllByFolder(
+            Folder folder
+    ) {
+        documentRepository.deleteAllByFolder(folder);
+    }
+
     private String convertPdfUrl(String pdfName) {
         return String.format("pdf/%s", pdfName);
     }

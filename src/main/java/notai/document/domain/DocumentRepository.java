@@ -2,6 +2,7 @@ package notai.document.domain;
 
 import notai.common.exception.type.NotFoundException;
 import notai.document.query.DocumentQueryRepository;
+import notai.folder.domain.Folder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long>, Docum
     }
 
     List<Document> findAllByFolderId(Long folderId);
+
+    void deleteAllByFolder(Folder folder);
 }
