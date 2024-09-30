@@ -19,12 +19,12 @@ class PdfServiceTest {
     @InjectMocks
     PdfService pdfService;
 
-    static final String STORAGE_DIR = "src/main/resources/documents/";
+    static final String STORAGE_DIR = "src/main/resources/pdf/";
 
     @Test
     void savePdf_success_existsTestPdf() throws IOException {
         //given
-        ClassPathResource existsPdf = new ClassPathResource("documents/test.pdf");
+        ClassPathResource existsPdf = new ClassPathResource("pdf/test.pdf");
         MockMultipartFile mockFile = new MockMultipartFile("file",
                 existsPdf.getFilename(),
                 "application/pdf",

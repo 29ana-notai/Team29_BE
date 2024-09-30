@@ -22,13 +22,14 @@ public class DocumentService {
             Long folderId, MultipartFile pdfFile, DocumentSaveRequest documentSaveRequest
     ) {
         String pdfName = pdfService.savePdf(pdfFile);
+        String pdfUrl = convertPdfUrl(pdfName);
         Folder folder = folderRepository.getById(folderId);
-        Document document = new Document(folder, documentSaveRequest.name(), pdfName);
+        Document document = new Document(folder, documentSaveRequest.name(), pdfUrl);
         Document savedDocument = documentRepository.save(document);
-        DocumentSaveResult documentSaveResult = DocumentSaveResult.of(savedDocument.getId(),
-                savedDocument.getName(),
-                savedDocument.getUrl()
-        );
-        return documentSaveResult;
+        return DocumentSaveResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
+    }
+
+    private String convertPdfUrl(String pdfName) {
+        return String.format("pdf/%s", pdfName);
     }
 }

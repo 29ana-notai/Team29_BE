@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PdfService {
 
-    private static final String STORAGE_DIR = "src/main/resources/documents/";
+    private static final String STORAGE_DIR = "src/main/resources/pdf/";
 
     public String savePdf(MultipartFile file) {
         try {
@@ -36,8 +36,8 @@ public class PdfService {
         }
     }
 
-    public File getPdf(String uuidFileName) {
-        Path filePath = Paths.get(STORAGE_DIR, uuidFileName);
+    public File getPdf(String fileName) {
+        Path filePath = Paths.get(STORAGE_DIR, fileName);
 
         if (!Files.exists(filePath)) {
             throw new NotFoundException("존재하지 않는 파일입니다.");
