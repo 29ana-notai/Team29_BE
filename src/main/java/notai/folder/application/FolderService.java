@@ -12,6 +12,8 @@ import notai.member.domain.Member;
 import notai.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FolderService {
@@ -54,6 +56,10 @@ public class FolderService {
     public void deleteFolder(Long memberId, Long id) {
         if (!folderRepository.existsByMemberIdAndId(memberId, id)) {
             throw new BadRequestException("올바르지 않은 요청입니다.");
+        }
+        List<Folder> subFolders = folderRepository.findAllByMemberIdAndParentFolderId(memberId, id);
+        for (Folder folder : subFolders) {
+            deleteFolder(memberId, folder.getId());
         }
         folderRepository.deleteById(id);
     }
