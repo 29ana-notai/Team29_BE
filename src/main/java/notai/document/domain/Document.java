@@ -29,17 +29,12 @@ public class Document extends RootEntity<Long> {
     private String name;
 
     @NotNull
-    @Column(name = "size")
-    private Integer size;
+    @Column(name = "url")
+    private String url;
 
-    @NotNull
-    @Column(name = "total_page")
-    private Integer totalPage;
-
-    public Document(Folder folder, String name, Integer size, Integer totalPage) {
+    public Document(Folder folder, String name, String url) {
         this.folder = folder;
         this.name = name;
-        this.size = size;
-        this.totalPage = totalPage;
+        this.url = url;
     }
 }
