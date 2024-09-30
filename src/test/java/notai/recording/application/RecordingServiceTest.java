@@ -10,6 +10,7 @@ import notai.recording.application.command.RecordingSaveCommand;
 import notai.recording.application.result.RecordingSaveResult;
 import notai.recording.domain.Recording;
 import notai.recording.domain.RecordingRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,6 +47,11 @@ class RecordingServiceTest {
 
     @Spy
     private final FileManager fileManager = new FileManager();
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(recordingService, "audioBasePath", "src/main/resources/audio/");
+    }
 
     @Test
     void 녹음_파일_업로드시_잘못된_데이터인_경우_예외발생() {

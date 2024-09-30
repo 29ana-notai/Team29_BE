@@ -13,6 +13,7 @@ import notai.recording.application.command.RecordingSaveCommand;
 import notai.recording.application.result.RecordingSaveResult;
 import notai.recording.domain.Recording;
 import notai.recording.domain.RecordingRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,9 @@ public class RecordingService {
     private final AudioDecoder audioDecoder;
     private final FileManager fileManager;
 
+    @Value("${file.audio.basePath}")
+    private String audioBasePath;
+
     public RecordingSaveResult saveRecording(RecordingSaveCommand command) {
         // TODO: document 개발 코드 올려주시면, getById 로 수정
         Document foundDocument =
@@ -38,11 +42,12 @@ public class RecordingService {
         Recording recording = new Recording(foundDocument);
         Recording savedRecording = recordingRepository.save(recording);
 
-        FilePath filePath = FilePath.from(foundDocument.getName() + "_" + savedRecording.getId() + ".mp3");
+        FilePath filePath =
+                FilePath.from(audioBasePath + foundDocument.getName() + "_" + savedRecording.getId() + ".mp3");
 
         try {
             byte[] binaryAudioData = audioDecoder.decode(command.audioData());
-            Path outputPath = Paths.get("src/main/resources/audio/" + filePath.getFilePath());
+            Path outputPath = Paths.get(filePath.getFilePath());
 
             fileManager.save(binaryAudioData, outputPath);
             savedRecording.updateFilePath(filePath);
