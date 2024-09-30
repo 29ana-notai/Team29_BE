@@ -41,6 +41,14 @@ public class DocumentService {
         return DocumentUpdateResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
     }
 
+    public void deleteDocument(
+            Long folderId, Long documentId
+    ) {
+        Document document = documentRepository.getById(documentId);
+        document.validateDocument(folderId);
+        documentRepository.delete(document);
+    }
+
     private String convertPdfUrl(String pdfName) {
         return String.format("pdf/%s", pdfName);
     }

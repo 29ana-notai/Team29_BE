@@ -57,4 +57,12 @@ public class DocumentController {
         List<DocumentFindResponse> responses = documentResults.stream().map(DocumentFindResponse::from).toList();
         return ResponseEntity.ok(responses);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> getDocuments(
+            @PathVariable Long folderId, @PathVariable Long id
+    ) {
+        documentService.deleteDocument(folderId, id);
+        return ResponseEntity.noContent().build();
+    }
 }
