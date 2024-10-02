@@ -20,11 +20,11 @@ public class PdfController {
 
     private final PdfService pdfService;
 
-    @GetMapping("/{fileName:.+}")
+    @GetMapping("/{fileName}")
     public ResponseEntity<FileSystemResource> getPdf(@PathVariable String fileName) {
         File pdf = pdfService.getPdf(fileName);
         FileSystemResource pdfResource = new FileSystemResource(pdf);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + fileName).contentType(
-                MediaType.IMAGE_JPEG).body(pdfResource);
+                MediaType.APPLICATION_PDF).body(pdfResource);
     }
 }

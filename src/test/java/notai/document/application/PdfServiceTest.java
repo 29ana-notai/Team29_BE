@@ -1,5 +1,9 @@
 package notai.document.application;
 
+import net.sourceforge.tess4j.Tesseract;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +39,28 @@ class PdfServiceTest {
         //then
         Path savedFilePath = Paths.get(STORAGE_DIR, savedFileName);
         Assertions.assertThat(Files.exists(savedFilePath)).isTrue();
+
+        System.setProperty("jna.library.path", "/usr/local/opt/tesseract/lib/");
+        //window, mac -> brew install tesseract, tesseract-lang
+        Tesseract tesseract = new Tesseract();
+
+        tesseract.setDatapath("/usr/local/share/tessdata");
+        tesseract.setLanguage("kor+eng");
+
+        try {
+            PDDocument pdDocument = Loader.loadPDF(savedFilePath.toFile());
+            PDFRenderer pdfRenderer = new PDFRenderer(pdDocument);
+
+            var image = pdfRenderer.renderImage(9);
+            var start = System.currentTimeMillis();
+            var ocrResult = tesseract.doOCR(image);
+            System.out.println("result : " + ocrResult);
+            var end = System.currentTimeMillis();
+            System.out.println(end - start);
+            pdDocument.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         deleteFile(savedFilePath);
     }
