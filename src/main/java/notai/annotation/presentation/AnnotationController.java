@@ -28,12 +28,12 @@ public class AnnotationController {
 
         AnnotationResponse response = annotationService.createAnnotation(
                 documentId,
-                request.getPageNumber(),
-                request.getX(),
-                request.getY(),
-                request.getWidth(),
-                request.getHeight(),
-                request.getContent()
+                request.pageNumber(),
+                request.x(),
+                request.y(),
+                request.width(),
+                request.height(),
+                request.content()
         );
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -57,11 +57,11 @@ public class AnnotationController {
         AnnotationResponse response = annotationService.updateAnnotation(
                 documentId,
                 annotationId,
-                request.getX(),
-                request.getY(),
-                request.getWidth(),
-                request.getHeight(),
-                request.getContent()
+                request.x(),
+                request.y(),
+                request.width(),
+                request.height(),
+                request.content()
         );
 
         return new ResponseEntity<>(response, HttpStatus.OK);
