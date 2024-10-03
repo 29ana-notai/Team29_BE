@@ -7,9 +7,6 @@ public record MemberFindResponse(
         String nickname
 ) {
     public static MemberFindResponse from(MemberFindResult result) {
-        return new MemberFindResponse(
-                result.id(),
-                result.nickname()
-        );
+        return new MemberFindResponse(result.id(), result.nickname());
     }
 }
