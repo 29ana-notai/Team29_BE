@@ -1,27 +1,29 @@
 package notai.annotation.presentation.request;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.validation.constraints.PositiveOrZero;
 
-@Getter
-@AllArgsConstructor
-public class CreateAnnotationRequest {
-    @Positive(message = "페이지 번호는 양수여야 합니다.")
-    private int pageNumber;
+public record CreateAnnotationRequest(
 
-    @Min(value = 0, message = "x 좌표는 0 이상이어야 합니다.") // MAX 값이..머지..
-    private int x;
+        @Positive(message = "페이지 번호는 양수여야 합니다.")
+        int pageNumber,
 
-    @Min(value = 0, message = "y 좌표는 0 이상이어야 합니다.") // MAX 값이..머지..
-    private int y;
+//        @Max(value = ?, message = "x 좌표는 최대 ? 이하여야 합니다.")
+        @PositiveOrZero(message = "x 좌표는 0 이상이어야 합니다.")
+        int x,
 
-    @Positive(message = "withd는 양수여야 합니다.")  // MAX 값이..머지..
-    private int width;
+//        @Max(value = ?, message = "x 좌표는 최대 ? 이하여야 합니다.")
+        @PositiveOrZero(message = "y 좌표는 0 이상이어야 합니다.")
+        int y,
 
-    @Positive(message = "height는 양수여야 합니다.")  // MAX 값이..머지..
-    private int height;
+//        @Max(value = ?, message = "width는 최대 ? 이하여야 합니다.")
+        @Positive(message = "width는 양수여야 합니다.")
+        int width,
 
-    private String content;
-}
+//        @Max(value = ?, message = "height는 최대 ? 이하여야 합니다.")
+        @Positive(message = "height는 양수여야 합니다.")
+        int height,
+
+        String content
+) {}
