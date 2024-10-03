@@ -26,10 +26,6 @@ public class AnnotationController {
             @PathVariable Long documentId,
             @RequestBody @Valid CreateAnnotationRequest request) {
 
-        if (request.getPageNumber() <= 0) {
-            throw new BadRequestException("유효하지 않은 페이지 번호: " + request.getPageNumber());
-        }
-
         AnnotationResponse response = annotationService.createAnnotation(
                 documentId,
                 request.getPageNumber(),
