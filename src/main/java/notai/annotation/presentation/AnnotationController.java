@@ -41,9 +41,11 @@ public class AnnotationController {
 
 
     @GetMapping
-    public ResponseEntity<List<AnnotationResponse>> getAnnotations(@PathVariable Long documentId) {
+    public ResponseEntity<List<AnnotationResponse>> getAnnotations(
+            @PathVariable Long documentId,
+            @RequestParam List<Integer> pageNumbers) {
 
-        List<AnnotationResponse> response = annotationQueryService.getAnnotationsByDocument(documentId);
+        List<AnnotationResponse> response = annotationQueryService.getAnnotationsByDocumentAndPageNumbers(documentId, pageNumbers);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

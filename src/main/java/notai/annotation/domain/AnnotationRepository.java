@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface AnnotationRepository extends JpaRepository<Annotation, Long> {
 
-    List<Annotation> findByDocumentId(Long documentId);
+    List<Annotation> findByDocumentIdAndPageNumberIn(Long documentId, List<Integer> pageNumbers);
+
 
     Optional<Annotation> findByIdAndDocumentId(Long id, Long documentId);
 
