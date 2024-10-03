@@ -54,10 +54,6 @@ public class AnnotationController {
             @PathVariable Long annotationId,
             @RequestBody @Valid CreateAnnotationRequest request) {
 
-        if (request.getX() < 0 || request.getY() < 0) {
-            throw new BadRequestException("유효하지 않은 좌표 값: (" + request.getX() + ", " + request.getY() + ")");
-        }
-
         AnnotationResponse response = annotationService.updateAnnotation(
                 documentId,
                 annotationId,
