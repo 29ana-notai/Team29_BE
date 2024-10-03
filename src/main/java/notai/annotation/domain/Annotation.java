@@ -2,6 +2,7 @@ package notai.annotation.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import notai.common.domain.RootEntity;
@@ -9,7 +10,7 @@ import notai.document.domain.Document;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "annotation")
 public class Annotation extends RootEntity<Long> {
     @Id
