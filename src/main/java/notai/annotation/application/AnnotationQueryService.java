@@ -30,7 +30,7 @@ public class AnnotationQueryService {
         }
 
         return annotations.stream()
-                .map(AnnotationResponse::new)
+                .map(AnnotationResponse::from)
                 .collect(Collectors.toList());
     }
 }

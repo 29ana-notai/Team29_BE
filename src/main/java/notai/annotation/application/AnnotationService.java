@@ -19,9 +19,9 @@ public class AnnotationService {
     private final AnnotationRepository annotationRepository;
     private final DocumentRepository documentRepository;
 
-    public Optional<Annotation> findById(Long annotationId) {
-        return annotationRepository.findById(annotationId);
-    }
+//    public Optional<Annotation> findById(Long annotationId) {
+//        return annotationRepository.findById(annotationId);
+//    }
 
     @Transactional
     public AnnotationResponse createAnnotation(Long documentId, int pageNumber, int x, int y, int width, int height, String content) {
@@ -30,7 +30,7 @@ public class AnnotationService {
 
         Annotation annotation = new Annotation(document, pageNumber, x, y, width, height, content);
         annotationRepository.save(annotation);
-        return new AnnotationResponse(annotation);
+        return AnnotationResponse.from(annotation);
     }
 
     @Transactional
@@ -41,7 +41,7 @@ public class AnnotationService {
                 .orElseThrow(() -> new NotFoundException("주석을 찾을 수 없습니다. ID: " + annotationId));
 
         annotation.updateAnnotation(x, y, width, height, content);
-        return new AnnotationResponse(annotation);
+        return AnnotationResponse.from(annotation);
     }
 
     @Transactional
