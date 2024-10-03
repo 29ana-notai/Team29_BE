@@ -14,8 +14,9 @@ public record AnnotationResponse(
         String createdAt,
         String updatedAt
 ) {
-    public AnnotationResponse(Annotation annotation) {
-        this(
+
+    public static AnnotationResponse from(Annotation annotation) {
+        return new AnnotationResponse(
                 annotation.getId(),
                 annotation.getDocument().getId(),
                 annotation.getPageNumber(),
