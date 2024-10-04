@@ -20,17 +20,17 @@ public class AnnotationQueryService {
     private final DocumentRepository documentRepository;
 
     @Transactional(readOnly = true)
-    public List<AnnotationResponse> getAnnotationsByDocument(Long documentId) {
+    public List<AnnotationResponse> getAnnotationsByDocumentAndPageNumbers(Long documentId, List<Integer> pageNumbers) {
         documentRepository.findById(documentId)
-                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId));
+                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId)); // documentRepository.getById(documentId);로 변경
 
-        List<Annotation> annotations = annotationRepository.findByDocumentId(documentId);
+        List<Annotation> annotations = annotationRepository.findByDocumentIdAndPageNumberIn(documentId, pageNumbers);
         if (annotations.isEmpty()) {
-            throw new NotFoundException("해당 문서에 주석이 존재하지 않습니다.");
+            throw new NotFoundException("해당 문서에 해당 페이지 번호의 주석이 존재하지 않습니다.");
         }
 
         return annotations.stream()
-                .map(AnnotationResponse::new)
+                .map(AnnotationResponse::from)
                 .collect(Collectors.toList());
     }
 }
