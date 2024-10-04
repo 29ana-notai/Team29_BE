@@ -22,7 +22,7 @@ public class AnnotationQueryService {
     @Transactional(readOnly = true)
     public List<AnnotationResponse> getAnnotationsByDocumentAndPageNumbers(Long documentId, List<Integer> pageNumbers) {
         documentRepository.findById(documentId)
-                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId));
+                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId)); // documentRepository.getById(documentId);로 변경
 
         List<Annotation> annotations = annotationRepository.findByDocumentIdAndPageNumberIn(documentId, pageNumbers);
         if (annotations.isEmpty()) {

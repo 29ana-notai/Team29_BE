@@ -22,7 +22,7 @@ public class AnnotationService {
     @Transactional
     public AnnotationResponse createAnnotation(Long documentId, int pageNumber, int x, int y, int width, int height, String content) {
         Document document = documentRepository.findById(documentId)
-                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId));
+                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId)); //Document document = documentRepository.getById(documentId);로 변경
 
         Annotation annotation = new Annotation(document, pageNumber, x, y, width, height, content);
         Annotation savedAnnotation = annotationRepository.save(annotation);
@@ -31,20 +31,18 @@ public class AnnotationService {
 
     @Transactional
     public AnnotationResponse updateAnnotation(Long documentId, Long annotationId, int x, int y, int width, int height, String content) {
-        Document document = documentRepository.findById(documentId)
-                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId));
-        Annotation annotation = annotationRepository.findByIdAndDocumentId(annotationId, documentId)
-                .orElseThrow(() -> new NotFoundException("주석을 찾을 수 없습니다. ID: " + annotationId));
-
+        documentRepository.findById(documentId)
+                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId)); //documentRepository.getById(documentId);로 변경
+        Annotation annotation = annotationRepository.getById(annotationId);
         annotation.updateAnnotation(x, y, width, height, content);
         return AnnotationResponse.from(annotation);
     }
 
     @Transactional
     public void deleteAnnotation(Long documentId, Long annotationId) {
-        Annotation annotation = annotationRepository.findByIdAndDocumentId(annotationId, documentId)
-                .orElseThrow(() -> new NotFoundException("주석을 찾을 수 없습니다. ID: " + annotationId));
-
+        documentRepository.findById(documentId)
+                .orElseThrow(() -> new NotFoundException("문서를 찾을 수 없습니다. ID: " + documentId)); //documentRepository.getById(documentId);로 변경
+        Annotation annotation = annotationRepository.getById(annotationId);
         annotationRepository.delete(annotation);
     }
 }
