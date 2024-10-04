@@ -35,7 +35,7 @@ public class PageRecordingService {
 
     private static void checkDocumentOwnershipOfRecording(PageRecordingSaveCommand command, Recording foundRecording) {
         if (!foundRecording.isRecordingOwnedByDocument(command.documentId())) {
-            throw new NotFoundException(""); // 강의 자료와 녹음 파일 연관 관계가 매칭이 안되는 경운데, 메시지에 뭐가 not found 라고 해야할지 모르겠네요..!
+            throw new NotFoundException("해당 녹음 파일을 찾을 수 없습니다.");
         }
     }
 }
