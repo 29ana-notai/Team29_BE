@@ -6,7 +6,6 @@ import notai.annotation.application.AnnotationQueryService;
 import notai.annotation.application.AnnotationService;
 import notai.annotation.presentation.request.CreateAnnotationRequest;
 import notai.annotation.presentation.response.AnnotationResponse;
-import notai.common.exception.type.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +22,16 @@ public class AnnotationController {
 
     @PostMapping
     public ResponseEntity<AnnotationResponse> createAnnotation(
-            @PathVariable Long documentId,
-            @RequestBody @Valid CreateAnnotationRequest request) {
+            @PathVariable Long documentId, @RequestBody @Valid CreateAnnotationRequest request
+    ) {
 
-        if (request.getPageNumber() <= 0) {
-            throw new BadRequestException("유효하지 않은 페이지 번호: " + request.getPageNumber());
-        }
-
-        AnnotationResponse response = annotationService.createAnnotation(
-                documentId,
-                request.getPageNumber(),
-                request.getX(),
-                request.getY(),
-                request.getWidth(),
-                request.getHeight(),
-                request.getContent()
+        AnnotationResponse response = annotationService.createAnnotation(documentId,
+                request.pageNumber(),
+                request.x(),
+                request.y(),
+                request.width(),
+                request.height(),
+                request.content()
         );
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -45,9 +39,14 @@ public class AnnotationController {
 
 
     @GetMapping
-    public ResponseEntity<List<AnnotationResponse>> getAnnotations(@PathVariable Long documentId) {
+    public ResponseEntity<List<AnnotationResponse>> getAnnotations(
+            @PathVariable Long documentId, @RequestParam List<Integer> pageNumbers
+    ) {
 
-        List<AnnotationResponse> response = annotationQueryService.getAnnotationsByDocument(documentId);
+        List<AnnotationResponse> response = annotationQueryService.getAnnotationsByDocumentAndPageNumbers(
+                documentId,
+                pageNumbers
+        );
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -56,20 +55,16 @@ public class AnnotationController {
     public ResponseEntity<AnnotationResponse> updateAnnotation(
             @PathVariable Long documentId,
             @PathVariable Long annotationId,
-            @RequestBody @Valid CreateAnnotationRequest request) {
+            @RequestBody @Valid CreateAnnotationRequest request
+    ) {
 
-        if (request.getX() < 0 || request.getY() < 0) {
-            throw new BadRequestException("유효하지 않은 좌표 값: (" + request.getX() + ", " + request.getY() + ")");
-        }
-
-        AnnotationResponse response = annotationService.updateAnnotation(
-                documentId,
+        AnnotationResponse response = annotationService.updateAnnotation(documentId,
                 annotationId,
-                request.getX(),
-                request.getY(),
-                request.getWidth(),
-                request.getHeight(),
-                request.getContent()
+                request.x(),
+                request.y(),
+                request.width(),
+                request.height(),
+                request.content()
         );
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -77,8 +72,8 @@ public class AnnotationController {
 
     @DeleteMapping("/{annotationId}")
     public ResponseEntity<Void> deleteAnnotation(
-            @PathVariable Long documentId,
-            @PathVariable Long annotationId) {
+            @PathVariable Long documentId, @PathVariable Long annotationId
+    ) {
 
         annotationService.deleteAnnotation(documentId, annotationId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
