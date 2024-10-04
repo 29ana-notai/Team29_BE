@@ -34,7 +34,12 @@ public class DocumentController {
             @RequestPart MultipartFile pdfFile,
             @RequestPart DocumentSaveRequest documentSaveRequest
     ) {
-        DocumentSaveResult documentSaveResult = documentService.saveDocument(folderId, pdfFile, documentSaveRequest);
+        DocumentSaveResult documentSaveResult;
+        if (folderId.equals(-1L)) {
+            documentSaveResult = documentService.saveRootDocument(pdfFile, documentSaveRequest);
+        } else {
+            documentSaveResult = documentService.saveDocument(folderId, pdfFile, documentSaveRequest);
+        }
         DocumentSaveResponse response = DocumentSaveResponse.from(documentSaveResult);
         String url = String.format("/api/folders/%s/documents/%s", folderId, response.id());
         return ResponseEntity.created(URI.create(url)).body(response);

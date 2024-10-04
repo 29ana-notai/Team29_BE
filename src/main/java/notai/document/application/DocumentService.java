@@ -31,6 +31,16 @@ public class DocumentService {
         return DocumentSaveResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
     }
 
+    public DocumentSaveResult saveRootDocument(
+            MultipartFile pdfFile, DocumentSaveRequest documentSaveRequest
+    ) {
+        String pdfName = pdfService.savePdf(pdfFile);
+        String pdfUrl = convertPdfUrl(pdfName);
+        Document document = new Document(documentSaveRequest.name(), pdfUrl);
+        Document savedDocument = documentRepository.save(document);
+        return DocumentSaveResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
+    }
+
     public DocumentUpdateResult updateDocument(
             Long folderId, Long documentId, DocumentUpdateRequest documentUpdateRequest
     ) {

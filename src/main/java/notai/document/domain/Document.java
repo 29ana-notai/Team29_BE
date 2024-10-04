@@ -20,7 +20,6 @@ public class Document extends RootEntity<Long> {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "folder_id", referencedColumnName = "id")
     private Folder folder;
@@ -35,6 +34,11 @@ public class Document extends RootEntity<Long> {
 
     public Document(Folder folder, String name, String url) {
         this.folder = folder;
+        this.name = name;
+        this.url = url;
+    }
+
+    public Document(String name, String url) {
         this.name = name;
         this.url = url;
     }
