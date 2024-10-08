@@ -29,7 +29,7 @@ public class Document extends RootEntity<Long> {
     private String name;
 
     @NotNull
-    @Column(name = "url")
+    @Column(name = "url", length = 255)
     private String url;
 
     public Document(Folder folder, String name, String url) {
