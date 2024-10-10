@@ -19,7 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-@Table(name = "llm")
+@Table(name = "llm_task_log")
 public class LLM extends RootEntity<UUID> {
 
     @Id
