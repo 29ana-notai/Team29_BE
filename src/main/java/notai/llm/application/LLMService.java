@@ -81,7 +81,7 @@ public class LLMService {
         summaryRepository.save(foundSummary);
         problemRepository.save(foundProblem);
 
-        return command.pageNumber();
+        return foundSummary.getPageNumber();
     }
 
     private UUID sendRequestToAIServer(String ocrText, String stt, String keyboardNote) {
