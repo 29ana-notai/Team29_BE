@@ -43,7 +43,7 @@ public class LLMService {
     private final AnnotationRepository annotationRepository;
     private final AiClient aiClient;
 
-    public LLMSubmitResult submitTask(LLMSubmitCommand command) {
+    public LLMSubmitResult submitTasks(LLMSubmitCommand command) {
         Document foundDocument = documentRepository.getById(command.documentId());
         List<Annotation> annotations = annotationRepository.findByDocumentId(command.documentId());
 

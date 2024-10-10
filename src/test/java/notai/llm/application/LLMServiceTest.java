@@ -69,7 +69,7 @@ class LLMServiceTest {
         given(documentRepository.getById(anyLong())).willThrow(NotFoundException.class);
 
         // when & then
-        assertAll(() -> assertThrows(NotFoundException.class, () -> llmService.submitTask(command)),
+        assertAll(() -> assertThrows(NotFoundException.class, () -> llmService.submitTasks(command)),
                 () -> verify(documentRepository, times(1)).getById(documentId),
                 () -> verify(llmRepository, never()).save(any(LLM.class))
         );
@@ -100,7 +100,7 @@ class LLMServiceTest {
         given(llmRepository.save(any(LLM.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         // when
-        LLMSubmitResult result = llmService.submitTask(command);
+        LLMSubmitResult result = llmService.submitTasks(command);
 
         // then
         assertAll(() -> verify(documentRepository, times(1)).getById(documentId),

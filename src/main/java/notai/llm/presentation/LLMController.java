@@ -29,7 +29,7 @@ public class LLMController {
     @PostMapping
     public ResponseEntity<LLMSubmitResponse> submitTask(@RequestBody @Valid LLMSubmitRequest request) {
         LLMSubmitCommand command = request.toCommand();
-        LLMSubmitResult result = llmService.submitTask(command);
+        LLMSubmitResult result = llmService.submitTasks(command);
         return ResponseEntity.accepted().body(LLMSubmitResponse.from(result));
     }
 
