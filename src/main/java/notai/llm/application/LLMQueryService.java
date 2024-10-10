@@ -1,6 +1,7 @@
 package notai.llm.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import notai.common.exception.type.InternalServerErrorException;
 import notai.common.exception.type.NotFoundException;
 import notai.document.domain.DocumentRepository;
@@ -22,6 +23,7 @@ import java.util.List;
 import static notai.llm.domain.TaskStatus.COMPLETED;
 import static notai.llm.domain.TaskStatus.IN_PROGRESS;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LLMQueryService {
@@ -72,7 +74,8 @@ public class LLMQueryService {
             List<SummaryPageContentResult> summaryResults, List<ProblemPageContentResult> problemResults
     ) {
         if (summaryResults.size() != problemResults.size()) {
-            throw new InternalServerErrorException("AI 요약 및 문제 생성 중에 문제가 발생했습니다."); // 요약 개수와 문제 개수가 불일치
+            log.error("요약 개수와 문제 개수가 일치하지 않습니다. 요약: {} 개, 문제: {} 개", summaryResults.size(), problemResults.size());
+            throw new InternalServerErrorException("AI 요약 및 문제 생성 중에 문제가 발생했습니다.");
         }
     }
 
@@ -106,6 +109,9 @@ public class LLMQueryService {
                       .filter(result -> result.pageNumber() == pageNumber)
                       .findFirst()
                       .map(ProblemPageContentResult::content)
-                      .orElseThrow(() -> new InternalServerErrorException("AI 요약 및 문제 생성 중에 문제가 발생했습니다.")); // 요약 페이지와 문제 페이지가 불일치
+                      .orElseThrow(() -> {
+                          log.error("{} 페이지에 대한 문제 생성 결과가 없습니다.", pageNumber);
+                          return new InternalServerErrorException("AI 요약 및 문제 생성 중에 문제가 발생했습니다.");
+                      }); // 요약 페이지와 문제 페이지가 불일치
     }
 }
