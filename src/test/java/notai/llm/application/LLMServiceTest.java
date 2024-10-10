@@ -95,7 +95,6 @@ class LLMServiceTest {
         Problem problem = mock(Problem.class);
 
         SummaryAndProblemUpdateCommand command = new SummaryAndProblemUpdateCommand(taskId,
-                pageNumber,
                 summaryContent,
                 problemContent
         );
@@ -108,6 +107,7 @@ class LLMServiceTest {
         given(taskRecord.getProblem()).willReturn(problem);
         given(summary.getId()).willReturn(summaryId);
         given(problem.getId()).willReturn(problemId);
+        given(summary.getPageNumber()).willReturn(pageNumber);
 
         // when
         Integer resultPageNumber = llmService.updateSummaryAndProblem(command);

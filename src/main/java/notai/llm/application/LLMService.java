@@ -61,7 +61,7 @@ public class LLMService {
         summaryRepository.save(foundSummary);
         problemRepository.save(foundProblem);
 
-        return command.pageNumber();
+        return foundSummary.getPageNumber();
     }
 
     /**
