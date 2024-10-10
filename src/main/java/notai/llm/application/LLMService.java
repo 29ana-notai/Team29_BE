@@ -33,7 +33,7 @@ public class LLMService {
     private final SummaryRepository summaryRepository;
     private final ProblemRepository problemRepository;
 
-    public LLMSubmitResult submitTask(LLMSubmitCommand command) {
+    public LLMSubmitResult submitTasks(LLMSubmitCommand command) {
         Document foundDocument = documentRepository.getById(command.documentId());
 
         command.pages().forEach(pageNumber -> {
