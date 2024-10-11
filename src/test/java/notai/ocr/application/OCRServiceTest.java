@@ -3,44 +3,40 @@ package notai.ocr.application;
 import notai.document.domain.Document;
 import notai.ocr.domain.OCR;
 import notai.ocr.domain.OCRRepository;
-import notai.pdf.PdfService;
 import notai.pdf.result.PdfSaveResult;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@ExtendWith(MockitoExtension.class)
 class OCRServiceTest {
-    @Mock
-    OCRRepository ocrRepository;
-    @InjectMocks
-    PdfService pdfService;
+
     @InjectMocks
     OCRService ocrService;
+    @Mock
+    OCRRepository ocrRepository;
 
     @Test
     void savePdf_success_existsTestPdf() throws IOException {
         //given
-        var document = mock(Document.class);
-        var ocr = mock(OCR.class);
+        Document document = mock(Document.class);
+        OCR ocr = mock(OCR.class);
         ClassPathResource existsPdf = new ClassPathResource("pdf/test.pdf");
-        MockMultipartFile mockFile = new MockMultipartFile("file",
-                existsPdf.getFilename(),
-                "application/pdf",
-                Files.readAllBytes(existsPdf.getFile().toPath())
-        );
+        PdfSaveResult saveResult = PdfSaveResult.of("test.pdf", existsPdf.getFile());
         when(ocrRepository.save(any(OCR.class))).thenReturn(ocr);
-        PdfSaveResult saveResult = pdfService.savePdf(mockFile);
-        //when, then
+        //when
         ocrService.saveOCR(document, saveResult.pdf());
+        //then
+        verify(ocrRepository, times(43)).save(any(OCR.class));
 
         deleteFile(saveResult.pdf().toPath());
     }

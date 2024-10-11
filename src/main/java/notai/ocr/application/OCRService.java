@@ -2,6 +2,7 @@ package notai.ocr.application;
 
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.tess4j.Tesseract;
+import notai.common.exception.type.FileProcessException;
 import notai.document.domain.Document;
 import notai.ocr.domain.OCR;
 import notai.ocr.domain.OCRRepository;
@@ -43,7 +44,7 @@ public class OCRService {
 
             pdDocument.close();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new FileProcessException("PDF 파일을 통해 OCR 작업을 수행하는데 실패했습니다.");
         }
     }
 }
