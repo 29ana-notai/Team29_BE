@@ -13,6 +13,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import static notai.common.exception.ErrorMessages.FILE_NOT_FOUND;
+import static notai.common.exception.ErrorMessages.FILE_SAVE_ERROR;
+
 @Service
 @RequiredArgsConstructor
 public class PdfService {
@@ -32,7 +35,7 @@ public class PdfService {
 
             return fileName;
         } catch (IOException exception) {
-            throw new FileProcessException("자료를 저장하는 과정에서 에러가 발생했습니다.");
+            throw new FileProcessException(FILE_SAVE_ERROR);
         }
     }
 
@@ -40,7 +43,7 @@ public class PdfService {
         Path filePath = Paths.get(STORAGE_DIR, fileName);
 
         if (!Files.exists(filePath)) {
-            throw new NotFoundException("존재하지 않는 파일입니다.");
+            throw new NotFoundException(FILE_NOT_FOUND);
         }
         return filePath.toFile();
     }
