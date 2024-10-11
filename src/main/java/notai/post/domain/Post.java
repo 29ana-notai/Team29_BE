@@ -8,13 +8,14 @@ import static lombok.AccessLevel.PROTECTED;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import notai.common.domain.RootEntity;
 import notai.member.domain.Member;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Post {
+public class Post extends RootEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
