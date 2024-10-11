@@ -1,4 +1,4 @@
-package notai.document.application;
+package notai.pdf;
 
 import lombok.RequiredArgsConstructor;
 import notai.common.exception.type.FileProcessException;

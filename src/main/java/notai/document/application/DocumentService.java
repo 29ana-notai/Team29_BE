@@ -9,6 +9,7 @@ import notai.document.presentation.request.DocumentSaveRequest;
 import notai.document.presentation.request.DocumentUpdateRequest;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
+import notai.pdf.PdfService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

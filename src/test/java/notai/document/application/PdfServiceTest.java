@@ -1,6 +1,7 @@
 package notai.document.application;
 
 import net.sourceforge.tess4j.Tesseract;
+import notai.pdf.PdfService;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
