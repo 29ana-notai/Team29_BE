@@ -9,15 +9,19 @@ import notai.document.presentation.request.DocumentSaveRequest;
 import notai.document.presentation.request.DocumentUpdateRequest;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
+import notai.ocr.application.OCRService;
 import notai.pdf.PdfService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @Service
 @RequiredArgsConstructor
 public class DocumentService {
 
     private final PdfService pdfService;
+    private final OCRService ocrService;
     private final DocumentRepository documentRepository;
     private final FolderRepository folderRepository;
 
@@ -29,6 +33,8 @@ public class DocumentService {
         Folder folder = folderRepository.getById(folderId);
         Document document = new Document(folder, documentSaveRequest.name(), pdfUrl);
         Document savedDocument = documentRepository.save(document);
+        File pdf = pdfService.getPdf(pdfName);
+        ocrService.saveOCR(document, pdf);
         return DocumentSaveResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
     }
 
@@ -39,6 +45,8 @@ public class DocumentService {
         String pdfUrl = convertPdfUrl(pdfName);
         Document document = new Document(documentSaveRequest.name(), pdfUrl);
         Document savedDocument = documentRepository.save(document);
+        File pdf = pdfService.getPdf(pdfName);
+        ocrService.saveOCR(document, pdf);
         return DocumentSaveResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
     }
 
