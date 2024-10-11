@@ -19,4 +19,8 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Long> {
         return findById(annotationId)
                 .orElseThrow(() -> new NotFoundException(ANNOTATION_NOT_FOUND));
     }
+
+    List<Annotation> findByDocumentIdAndPageNumber(Long documentId, Integer pageNumber);
+
+    List<Annotation> findByDocumentId(Long documentId);
 }

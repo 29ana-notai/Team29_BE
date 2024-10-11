@@ -1,8 +1,9 @@
-package notai.document.application;
+package notai.pdf;
 
 import lombok.RequiredArgsConstructor;
 import notai.common.exception.type.FileProcessException;
 import notai.common.exception.type.NotFoundException;
+import notai.pdf.result.PdfSaveResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,7 @@ public class PdfService {
 
     private static final String STORAGE_DIR = "src/main/resources/pdf/";
 
-    public String savePdf(MultipartFile file) {
+    public PdfSaveResult savePdf(MultipartFile file) {
         try {
             Path directoryPath = Paths.get(STORAGE_DIR);
             if (!Files.exists(directoryPath)) {
@@ -33,7 +34,7 @@ public class PdfService {
             Path filePath = directoryPath.resolve(fileName);
             file.transferTo(filePath.toFile());
 
-            return fileName;
+            return PdfSaveResult.of(fileName, filePath.toFile());
         } catch (IOException exception) {
             throw new FileProcessException(FILE_SAVE_ERROR);
         }
