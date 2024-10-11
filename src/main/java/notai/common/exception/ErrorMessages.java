@@ -11,6 +11,10 @@ public enum ErrorMessages {
     // document
     DOCUMENT_NOT_FOUND("자료를 찾을 수 없습니다."),
 
+    // ocr
+    OCR_RESULT_NOT_FOUND("OCR 데이터를 찾을 수 없습니다."),
+    OCR_TASK_ERROR("PDF 파일을 통해 OCR 작업을 수행하는데 실패했습니다."),
+
     // folder
     FOLDER_NOT_FOUND("폴더를 찾을 수 없습니다."),
 
@@ -32,6 +36,7 @@ public enum ErrorMessages {
 
     // external api call
     KAKAO_API_ERROR("카카오 API 호출에 예외가 발생했습니다."),
+    AI_SERVER_ERROR("AI 서버 API 호출에 예외가 발생했습니다."),
 
     // auth
     INVALID_ACCESS_TOKEN("유효하지 않은 토큰입니다."),
