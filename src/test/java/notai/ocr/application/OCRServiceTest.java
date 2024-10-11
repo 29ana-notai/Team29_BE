@@ -4,6 +4,7 @@ import notai.document.domain.Document;
 import notai.ocr.domain.OCR;
 import notai.ocr.domain.OCRRepository;
 import notai.pdf.PdfService;
+import notai.pdf.result.PdfSaveResult;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
@@ -13,7 +14,6 @@ import static org.mockito.Mockito.when;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,12 +38,11 @@ class OCRServiceTest {
                 Files.readAllBytes(existsPdf.getFile().toPath())
         );
         when(ocrRepository.save(any(OCR.class))).thenReturn(ocr);
-        String savedFileName = pdfService.savePdf(mockFile);
-        File pdfFile = pdfService.getPdf(savedFileName);
+        PdfSaveResult saveResult = pdfService.savePdf(mockFile);
         //when, then
-        ocrService.saveOCR(document, pdfFile);
+        ocrService.saveOCR(document, saveResult.pdf());
 
-        deleteFile(pdfFile.toPath());
+        deleteFile(saveResult.pdf().toPath());
     }
 
     void deleteFile(Path filePath) throws IOException {
