@@ -1,7 +1,6 @@
 package notai.post.presentation;
 
 import lombok.RequiredArgsConstructor;
-import notai.post.application.PostQueryService;
 import notai.post.application.PostService;
 import notai.post.application.result.PostFindResult;
 import notai.post.application.result.PostSaveResult;
@@ -19,7 +18,6 @@ import java.net.URI;
 public class PostController {
 
     private final PostService postService;
-    private final PostQueryService postQueryService;
 
     @PostMapping
     public ResponseEntity<PostSaveResponse> savePost(
@@ -31,11 +29,11 @@ public class PostController {
         return ResponseEntity.created(URI.create(url)).body(response);
     }
 
-    @GetMapping(value ="/{postId}")
+    @GetMapping(value = "/{postId}")
     public ResponseEntity<PostFindResponse> getPost(
             @PathVariable Long postId
-    ){
-        PostFindResult postFindResult =postQueryService.findPost(postId);
+    ) {
+        PostFindResult postFindResult = postService.findPost(postId);
         PostFindResponse response = PostFindResponse.from(postFindResult);
         return ResponseEntity.ok(response);
     }

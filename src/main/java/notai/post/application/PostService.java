@@ -3,6 +3,7 @@ package notai.post.application;
 import lombok.RequiredArgsConstructor;
 import notai.member.domain.Member;
 import notai.member.domain.MemberRepository;
+import notai.post.application.result.PostFindResult;
 import notai.post.application.result.PostSaveResult;
 import notai.post.domain.Post;
 import notai.post.domain.PostRepository;
@@ -20,5 +21,10 @@ public class PostService {
         Post post = new Post(member, postSaveRequest.title(), postSaveRequest.content());
         Post savedPost = postRepository.save(post);
         return PostSaveResult.of(savedPost.getId(), savedPost.getTitle());
+    }
+
+    public PostFindResult findPost(Long postId) {
+        Post post = postRepository.findById(postId).get();
+        return PostFindResult.of(post);
     }
 }
