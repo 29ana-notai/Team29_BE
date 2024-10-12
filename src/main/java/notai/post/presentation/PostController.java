@@ -25,8 +25,7 @@ public class PostController {
     public ResponseEntity<PostSaveResponse> savePost(
             @RequestBody PostSaveRequest postSaveRequest
     ) {
-        PostSaveResult postSaveResult;
-        postSaveResult = postService.savePost(postSaveRequest);
+        PostSaveResult postSaveResult = postService.savePost(postSaveRequest);
         PostSaveResponse response = PostSaveResponse.from(postSaveResult);
         String url = String.format("/api/post/%s", response.id());
         return ResponseEntity.created(URI.create(url)).body(response);
