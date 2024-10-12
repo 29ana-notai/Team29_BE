@@ -6,7 +6,6 @@ import notai.post.application.result.PostFindResult;
 import notai.post.application.result.PostSaveResult;
 import notai.post.presentation.request.PostSaveRequest;
 import notai.post.presentation.response.PostFindResponse;
-import notai.post.presentation.response.PostSaveResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +19,12 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostSaveResponse> savePost(
+    public ResponseEntity<Void> savePost(
             @RequestBody PostSaveRequest postSaveRequest
     ) {
         PostSaveResult postSaveResult = postService.savePost(postSaveRequest);
-        PostSaveResponse response = PostSaveResponse.from(postSaveResult);
-        String url = String.format("/api/post/%s", response.id());
-        return ResponseEntity.created(URI.create(url)).body(response);
+        String url = String.format("/api/post/%s", postSaveResult.id());
+        return ResponseEntity.created(URI.create(url)).build();
     }
 
     @GetMapping(value = "/{postId}")
