@@ -1,6 +1,7 @@
 package notai.post.presentation;
 
 import lombok.RequiredArgsConstructor;
+import notai.post.application.command.PostSaveCommand;
 import notai.post.application.PostService;
 import notai.post.application.result.PostFindResult;
 import notai.post.application.result.PostSaveResult;
@@ -22,7 +23,8 @@ public class PostController {
     public ResponseEntity<Void> savePost(
             @RequestBody PostSaveRequest postSaveRequest
     ) {
-        PostSaveResult postSaveResult = postService.savePost(postSaveRequest);
+        PostSaveCommand postSaveCommand = postSaveRequest.toCommand();
+        PostSaveResult postSaveResult = postService.savePost(postSaveCommand);
         String url = String.format("/api/post/%s", postSaveResult.id());
         return ResponseEntity.created(URI.create(url)).build();
     }
