@@ -11,9 +11,9 @@ import notai.llm.application.result.LLMResultsResult.LLMResult;
 import notai.llm.application.result.LLMStatusResult;
 import notai.llm.domain.TaskStatus;
 import notai.llm.query.LLMQueryRepository;
-import notai.problem.query.ProblemQueryRepository;
+import notai.problem.domain.ProblemRepository;
 import notai.problem.query.result.ProblemPageContentResult;
-import notai.summary.query.SummaryQueryRepository;
+import notai.summary.domain.SummaryRepository;
 import notai.summary.query.result.SummaryPageContentResult;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +31,8 @@ public class LLMQueryService {
 
     private final LLMQueryRepository llmQueryRepository;
     private final DocumentRepository documentRepository;
-    private final SummaryQueryRepository summaryQueryRepository;
-    private final ProblemQueryRepository problemQueryRepository;
+    private final SummaryRepository summaryRepository;
+    private final ProblemRepository problemRepository;
 
     public LLMStatusResult fetchTaskStatus(Long documentId) {
         checkDocumentExists(documentId);
@@ -81,7 +81,7 @@ public class LLMQueryService {
     }
 
     private List<Long> getSummaryIds(Long documentId) {
-        List<Long> summaryIds = summaryQueryRepository.getSummaryIdsByDocumentId(documentId);
+        List<Long> summaryIds = summaryRepository.getSummaryIdsByDocumentId(documentId);
         if (summaryIds.isEmpty()) {
             throw new NotFoundException(LLM_TASK_LOG_NOT_FOUND);
         }
@@ -93,7 +93,7 @@ public class LLMQueryService {
     }
 
     private List<SummaryPageContentResult> getSummaryPageContentResults(Long documentId) {
-        List<SummaryPageContentResult> summaryResults = summaryQueryRepository.getPageNumbersAndContentByDocumentId(
+        List<SummaryPageContentResult> summaryResults = summaryRepository.getPageNumbersAndContentByDocumentId(
                 documentId);
         if (summaryResults.isEmpty()) {
             throw new NotFoundException(LLM_TASK_LOG_NOT_FOUND);
@@ -102,7 +102,7 @@ public class LLMQueryService {
     }
 
     private List<ProblemPageContentResult> getProblemPageContentResults(Long documentId) {
-        return problemQueryRepository.getPageNumbersAndContentByDocumentId(documentId);
+        return problemRepository.getPageNumbersAndContentByDocumentId(documentId);
     }
 
     private String findProblemContentByPageNumber(List<ProblemPageContentResult> results, int pageNumber) {
