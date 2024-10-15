@@ -10,5 +10,5 @@ public interface SummaryQueryRepository {
 
     List<SummaryPageContentResult> getPageNumbersAndContentByDocumentId(Long documentId);
 
-    void deleteSummaryByDocumentIdAndPageNumbers(Long documentId, List<Integer> pageNumbers);
+    Long getSummaryIdByDocumentIdAndPageNumber(Long documentId, int pageNumber);
 }

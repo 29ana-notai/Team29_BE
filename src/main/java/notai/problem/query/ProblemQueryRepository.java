@@ -7,6 +7,4 @@ import java.util.List;
 public interface ProblemQueryRepository {
 
     List<ProblemPageContentResult> getPageNumbersAndContentByDocumentId(Long documentId);
-
-    void deleteProblemByDocumentIdAndPageNumbers(Long documentId, List<Integer> pageNumbers);
 }

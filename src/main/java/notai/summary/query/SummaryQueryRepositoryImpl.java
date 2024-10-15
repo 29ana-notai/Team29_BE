@@ -2,7 +2,6 @@ package notai.summary.query;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import notai.summary.domain.QSummary;
 import notai.summary.query.result.SummaryPageContentResult;
@@ -13,7 +12,6 @@ import java.util.List;
 public class SummaryQueryRepositoryImpl implements SummaryQueryRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager entityManager;
 
     @Override
     public List<Long> getSummaryIdsByDocumentId(Long documentId) {
@@ -42,14 +40,13 @@ public class SummaryQueryRepositoryImpl implements SummaryQueryRepository {
     }
 
     @Override
-    public void deleteSummaryByDocumentIdAndPageNumbers(Long documentId, List<Integer> pageNumbers) {
+    public Long getSummaryIdByDocumentIdAndPageNumber(Long documentId, int pageNumber) {
         QSummary summary = QSummary.summary;
 
-        queryFactory.delete(summary)
-                    .where(summary.document.id.eq(documentId).and(summary.pageNumber.in(pageNumbers)))
-                    .execute();
-
-        entityManager.flush();
-        entityManager.clear();
+        return queryFactory
+                .select(summary.id)
+                .from(summary)
+                .where(summary.document.id.eq(documentId).and(summary.pageNumber.eq(pageNumber)))
+                .fetchOne();
     }
 }
