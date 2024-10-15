@@ -3,8 +3,8 @@ package notai.llm.application;
 import notai.common.exception.type.InternalServerErrorException;
 import notai.common.exception.type.NotFoundException;
 import notai.document.domain.DocumentRepository;
+import notai.llm.application.result.LLMOverallStatusResult;
 import notai.llm.application.result.LLMResultsResult;
-import notai.llm.application.result.LLMStatusResult;
 import notai.llm.query.LLMQueryRepository;
 import notai.problem.domain.ProblemRepository;
 import notai.problem.query.result.ProblemPageContentResult;
@@ -49,7 +49,7 @@ class LLMQueryServiceTest {
         given(documentRepository.existsById(anyLong())).willReturn(false);
 
         // when & then
-        assertAll(() -> assertThrows(NotFoundException.class, () -> llmQueryService.fetchTaskStatus(1L)),
+        assertAll(() -> assertThrows(NotFoundException.class, () -> llmQueryService.fetchOverallStatus(1L)),
                 () -> verify(documentRepository).existsById(anyLong())
         );
     }
@@ -67,7 +67,7 @@ class LLMQueryServiceTest {
         given(llmQueryRepository.getTaskStatusBySummaryId(3L)).willReturn(COMPLETED);
 
         // when
-        LLMStatusResult result = llmQueryService.fetchTaskStatus(documentId);
+        LLMOverallStatusResult result = llmQueryService.fetchOverallStatus(documentId);
 
         // then
         assertAll(() -> assertThat(result.overallStatus()).isEqualTo(COMPLETED),
@@ -92,7 +92,7 @@ class LLMQueryServiceTest {
         given(llmQueryRepository.getTaskStatusBySummaryId(3L)).willReturn(PENDING);
 
         // when
-        LLMStatusResult result = llmQueryService.fetchTaskStatus(documentId);
+        LLMOverallStatusResult result = llmQueryService.fetchOverallStatus(documentId);
 
         // then
         assertAll(() -> assertThat(result.overallStatus()).isEqualTo(IN_PROGRESS),

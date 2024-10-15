@@ -1,6 +1,5 @@
 package notai.llm.application;
 
-import static java.util.stream.Collectors.groupingBy;
 import lombok.RequiredArgsConstructor;
 import notai.annotation.domain.Annotation;
 import notai.annotation.domain.AnnotationRepository;
@@ -25,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * SummaryService 와 ExamService 는 엔티티와 관련된 로직만 처리하고

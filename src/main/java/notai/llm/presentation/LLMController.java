@@ -4,17 +4,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import notai.llm.application.LLMQueryService;
 import notai.llm.application.LLMService;
+import notai.llm.application.command.LLMPageStatusCommand;
 import notai.llm.application.command.LLMSubmitCommand;
 import notai.llm.application.command.SummaryAndProblemUpdateCommand;
+import notai.llm.application.result.LLMOverallStatusResult;
+import notai.llm.application.result.LLMPageStatusResult;
 import notai.llm.application.result.LLMResultsResult;
-import notai.llm.application.result.LLMStatusResult;
 import notai.llm.application.result.LLMSubmitResult;
 import notai.llm.presentation.request.LLMSubmitRequest;
 import notai.llm.presentation.request.SummaryAndProblemUpdateRequest;
-import notai.llm.presentation.response.LLMResultsResponse;
-import notai.llm.presentation.response.LLMStatusResponse;
-import notai.llm.presentation.response.LLMSubmitResponse;
-import notai.llm.presentation.response.SummaryAndProblemUpdateResponse;
+import notai.llm.presentation.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +33,18 @@ public class LLMController {
     }
 
     @GetMapping("/status/{documentId}")
-    public ResponseEntity<LLMStatusResponse> fetchTaskStatus(@PathVariable("documentId") Long documentId) {
-        LLMStatusResult result = llmQueryService.fetchTaskStatus(documentId);
-        return ResponseEntity.ok(LLMStatusResponse.from(result));
+    public ResponseEntity<LLMOverallStatusResponse> fetchOverallStatus(@PathVariable("documentId") Long documentId) {
+        LLMOverallStatusResult result = llmQueryService.fetchOverallStatus(documentId);
+        return ResponseEntity.ok(LLMOverallStatusResponse.from(result));
+    }
+
+    @GetMapping("/status/{documentId}/{pageNumber}")
+    public ResponseEntity<LLMPageStatusResponse> fetchPageStatus(
+            @PathVariable("documentId") Long documentId, @PathVariable("pageNumber") Integer pageNumber
+    ) {
+        LLMPageStatusCommand command = LLMPageStatusCommand.of(documentId, pageNumber);
+        LLMPageStatusResult result = llmQueryService.fetchPageStatus(command);
+        return ResponseEntity.ok(LLMPageStatusResponse.from(result));
     }
 
     @GetMapping("/results/{documentId}")

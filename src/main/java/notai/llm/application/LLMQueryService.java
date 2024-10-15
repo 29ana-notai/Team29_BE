@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import notai.common.exception.type.InternalServerErrorException;
 import notai.common.exception.type.NotFoundException;
 import notai.document.domain.DocumentRepository;
+import notai.llm.application.command.LLMPageStatusCommand;
+import notai.llm.application.result.LLMOverallStatusResult;
+import notai.llm.application.result.LLMPageStatusResult;
 import notai.llm.application.result.LLMResultsResult;
 import notai.llm.application.result.LLMResultsResult.LLMContent;
 import notai.llm.application.result.LLMResultsResult.LLMResult;
-import notai.llm.application.result.LLMStatusResult;
 import notai.llm.domain.TaskStatus;
 import notai.llm.query.LLMQueryRepository;
 import notai.problem.domain.ProblemRepository;
@@ -21,8 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static notai.common.exception.ErrorMessages.*;
-import static notai.llm.domain.TaskStatus.COMPLETED;
-import static notai.llm.domain.TaskStatus.IN_PROGRESS;
+import static notai.llm.domain.TaskStatus.*;
 
 @Slf4j
 @Service
@@ -34,7 +35,7 @@ public class LLMQueryService {
     private final SummaryRepository summaryRepository;
     private final ProblemRepository problemRepository;
 
-    public LLMStatusResult fetchTaskStatus(Long documentId) {
+    public LLMOverallStatusResult fetchOverallStatus(Long documentId) {
         checkDocumentExists(documentId);
         List<Long> summaryIds = getSummaryIds(documentId);
         List<TaskStatus> taskStatuses = getTaskStatuses(summaryIds);
@@ -43,9 +44,20 @@ public class LLMQueryService {
         int completedPages = Collections.frequency(taskStatuses, COMPLETED);
 
         if (totalPages == completedPages) {
-            return LLMStatusResult.of(documentId, COMPLETED, totalPages, completedPages);
+            return LLMOverallStatusResult.of(documentId, COMPLETED, totalPages, completedPages);
         }
-        return LLMStatusResult.of(documentId, IN_PROGRESS, totalPages, completedPages);
+        return LLMOverallStatusResult.of(documentId, IN_PROGRESS, totalPages, completedPages);
+    }
+
+    public LLMPageStatusResult fetchPageStatus(LLMPageStatusCommand command) {
+        checkDocumentExists(command.documentId());
+        Long summaryId =
+                summaryRepository.getSummaryIdByDocumentIdAndPageNumber(command.documentId(), command.pageNumber());
+
+        if (summaryId == null) {
+            return LLMPageStatusResult.from(NOT_REQUESTED);
+        }
+        return LLMPageStatusResult.from(llmQueryRepository.getTaskStatusBySummaryId(summaryId));
     }
 
     public LLMResultsResult findTaskResult(Long documentId) {
