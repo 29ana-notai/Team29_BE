@@ -1,7 +1,6 @@
 package notai.llm.application;
 
 import static notai.common.exception.ErrorMessages.DOCUMENT_NOT_FOUND;
-import static notai.common.exception.ErrorMessages.LLM_TASK_LOG_NOT_FOUND;
 import static notai.common.exception.ErrorMessages.LLM_TASK_RESULT_ERROR;
 import static notai.llm.domain.TaskStatus.COMPLETED;
 import static notai.llm.domain.TaskStatus.IN_PROGRESS;
@@ -42,7 +41,12 @@ public class LLMQueryService {
 
     public LLMOverallStatusResult fetchOverallStatus(Long documentId) {
         checkDocumentExists(documentId);
-        List<Long> summaryIds = getSummaryIds(documentId);
+        List<Long> summaryIds = summaryRepository.getSummaryIdsByDocumentId(documentId);
+
+        if (summaryIds.isEmpty()) {
+            return LLMOverallStatusResult.of(documentId, NOT_REQUESTED, 0, 0);
+        }
+
         List<TaskStatus> taskStatuses = getTaskStatuses(summaryIds);
 
         int totalPages = summaryIds.size();
@@ -67,9 +71,17 @@ public class LLMQueryService {
 
     public LLMAllPagesResult findAllPagesResult(Long documentId) {
         checkDocumentExists(documentId);
-        List<SummaryPageContentResult> summaryResults = getSummaryPageContentResults(documentId);
-        List<ProblemPageContentResult> problemResults = getProblemPageContentResults(documentId);
+
+        List<SummaryPageContentResult> summaryResults =
+                summaryRepository.getPageNumbersAndContentByDocumentId(documentId);
+        List<ProblemPageContentResult> problemResults =
+                problemRepository.getPageNumbersAndContentByDocumentId(documentId);
+
         checkSummaryAndProblemCountsEqual(summaryResults, problemResults);
+
+        if (summaryResults.isEmpty()) {
+            return LLMAllPagesResult.of(documentId, Collections.emptyList());
+        }
 
         List<LLMResult> results = summaryResults.stream().map(summaryResult -> {
             LLMContent content = LLMContent.of(
@@ -95,15 +107,16 @@ public class LLMQueryService {
         return LLMPageResult.of(summaryResult, problemResult);
     }
 
-    private static void checkSummaryAndProblemConsistency(LLMPageResultCommand command, String summaryResult, String problemResult) {
+    private static void checkSummaryAndProblemConsistency(LLMPageResultCommand command, String summaryResult,
+                                                          String problemResult) {
         if (summaryResult == null && problemResult != null) {
             log.error("요약과 문제 생성 결과가 매칭되지 않습니다. {} 페이지에 대한 요약 결과가 없습니다.", command.pageNumber());
-            throw  new InternalServerErrorException(LLM_TASK_RESULT_ERROR);
+            throw new InternalServerErrorException(LLM_TASK_RESULT_ERROR);
         }
 
         if (problemResult == null && summaryResult != null) {
             log.error("요약과 문제 생성 결과가 매칭되지 않습니다. {} 페이지에 대한 문제 생성 결과가 없습니다.", command.pageNumber());
-            throw  new InternalServerErrorException(LLM_TASK_RESULT_ERROR);
+            throw new InternalServerErrorException(LLM_TASK_RESULT_ERROR);
         }
     }
 
@@ -122,39 +135,18 @@ public class LLMQueryService {
         }
     }
 
-    private List<Long> getSummaryIds(Long documentId) {
-        List<Long> summaryIds = summaryRepository.getSummaryIdsByDocumentId(documentId);
-        if (summaryIds.isEmpty()) {
-            throw new NotFoundException(LLM_TASK_LOG_NOT_FOUND);
-        }
-        return summaryIds;
-    }
-
     private List<TaskStatus> getTaskStatuses(List<Long> summaryIds) {
         return summaryIds.stream().map(llmQueryRepository::getTaskStatusBySummaryId).toList();
     }
 
-    private List<SummaryPageContentResult> getSummaryPageContentResults(Long documentId) {
-        List<SummaryPageContentResult> summaryResults = summaryRepository.getPageNumbersAndContentByDocumentId(
-                documentId);
-        if (summaryResults.isEmpty()) {
-            throw new NotFoundException(LLM_TASK_LOG_NOT_FOUND);
-        }
-        return summaryResults;
-    }
-
-    private List<ProblemPageContentResult> getProblemPageContentResults(Long documentId) {
-        return problemRepository.getPageNumbersAndContentByDocumentId(documentId);
-    }
-
     private String findProblemContentByPageNumber(List<ProblemPageContentResult> results, int pageNumber) {
         return results.stream()
-                      .filter(result -> result.pageNumber() == pageNumber)
-                      .findFirst()
-                      .map(ProblemPageContentResult::content)
-                      .orElseThrow(() -> {
-                          log.error("요약과 문제 생성 결과가 매칭되지 않습니다. {} 페이지에 대한 문제 생성 결과가 없습니다.", pageNumber);
-                          return new InternalServerErrorException(LLM_TASK_RESULT_ERROR);
-                      });
+                .filter(result -> result.pageNumber() == pageNumber)
+                .findFirst()
+                .map(ProblemPageContentResult::content)
+                .orElseThrow(() -> {
+                    log.error("요약과 문제 생성 결과가 매칭되지 않습니다. {} 페이지에 대한 문제 생성 결과가 없습니다.", pageNumber);
+                    return new InternalServerErrorException(LLM_TASK_RESULT_ERROR);
+                });
     }
 }

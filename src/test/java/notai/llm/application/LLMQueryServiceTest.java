@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
 import java.util.List;
 import notai.common.exception.type.InternalServerErrorException;
 import notai.common.exception.type.NotFoundException;
@@ -265,5 +266,42 @@ class LLMQueryServiceTest {
 
         // when & then
         assertThrows(InternalServerErrorException.class, () -> llmQueryService.findPageResult(command));
+    }
+
+    @Test
+    void 요청_기록이_없는_문서의_작업_상태_확인시_NOT_REQUESTED() {
+        // given
+        Long documentId = 1L;
+
+        given(documentRepository.existsById(anyLong())).willReturn(true);
+        given(summaryRepository.getSummaryIdsByDocumentId(documentId)).willReturn(Collections.emptyList());
+
+        // when
+        LLMOverallStatusResult result = llmQueryService.fetchOverallStatus(documentId);
+
+        // then
+        assertAll(
+                () -> assertThat(result.overallStatus()).isEqualTo(NOT_REQUESTED),
+                () -> assertThat(result.totalPages()).isEqualTo(0),
+                () -> assertThat(result.completedPages()).isEqualTo(0)
+        );
+    }
+
+    @Test
+    void 요청_기록이_없는_문서의_결과_확인시_empty_list_응답() {
+        // given
+        Long documentId = 1L;
+
+        given(documentRepository.existsById(anyLong())).willReturn(true);
+        given(summaryRepository.getPageNumbersAndContentByDocumentId(documentId)).willReturn(Collections.emptyList());
+
+        // when
+        LLMAllPagesResult result = llmQueryService.findAllPagesResult(documentId);
+
+        // then
+        assertAll(
+                () -> assertThat(result.totalPages()).isEqualTo(0),
+                () -> assertThat(result.results()).isEmpty()
+        );
     }
 }
