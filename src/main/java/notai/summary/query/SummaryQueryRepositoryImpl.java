@@ -2,11 +2,10 @@ package notai.summary.query;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import notai.summary.domain.QSummary;
 import notai.summary.query.result.SummaryPageContentResult;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class SummaryQueryRepositoryImpl implements SummaryQueryRepository {
@@ -40,11 +39,22 @@ public class SummaryQueryRepositoryImpl implements SummaryQueryRepository {
     }
 
     @Override
-    public Long getSummaryIdByDocumentIdAndPageNumber(Long documentId, int pageNumber) {
+    public Long getSummaryIdByDocumentIdAndPageNumber(Long documentId, Integer pageNumber) {
         QSummary summary = QSummary.summary;
 
         return queryFactory
                 .select(summary.id)
+                .from(summary)
+                .where(summary.document.id.eq(documentId).and(summary.pageNumber.eq(pageNumber)))
+                .fetchOne();
+    }
+
+    @Override
+    public String getSummaryContentByDocumentIdAndPageNumber(Long documentId, Integer pageNumber) {
+        QSummary summary = QSummary.summary;
+
+        return queryFactory
+                .select(summary.content)
                 .from(summary)
                 .where(summary.document.id.eq(documentId).and(summary.pageNumber.eq(pageNumber)))
                 .fetchOne();

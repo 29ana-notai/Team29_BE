@@ -1,8 +1,7 @@
 package notai.summary.query;
 
-import notai.summary.query.result.SummaryPageContentResult;
-
 import java.util.List;
+import notai.summary.query.result.SummaryPageContentResult;
 
 public interface SummaryQueryRepository {
 
@@ -10,5 +9,7 @@ public interface SummaryQueryRepository {
 
     List<SummaryPageContentResult> getPageNumbersAndContentByDocumentId(Long documentId);
 
-    Long getSummaryIdByDocumentIdAndPageNumber(Long documentId, int pageNumber);
+    Long getSummaryIdByDocumentIdAndPageNumber(Long documentId, Integer pageNumber);
+
+    String getSummaryContentByDocumentIdAndPageNumber(Long documentId, Integer pageNumber);
 }

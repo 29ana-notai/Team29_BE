@@ -4,18 +4,30 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import notai.llm.application.LLMQueryService;
 import notai.llm.application.LLMService;
+import notai.llm.application.command.LLMPageResultCommand;
 import notai.llm.application.command.LLMPageStatusCommand;
 import notai.llm.application.command.LLMSubmitCommand;
 import notai.llm.application.command.SummaryAndProblemUpdateCommand;
+import notai.llm.application.result.LLMAllPagesResult;
 import notai.llm.application.result.LLMOverallStatusResult;
+import notai.llm.application.result.LLMPageResult;
 import notai.llm.application.result.LLMPageStatusResult;
-import notai.llm.application.result.LLMResultsResult;
 import notai.llm.application.result.LLMSubmitResult;
 import notai.llm.presentation.request.LLMSubmitRequest;
 import notai.llm.presentation.request.SummaryAndProblemUpdateRequest;
-import notai.llm.presentation.response.*;
+import notai.llm.presentation.response.LLMAllPagesResultResponse;
+import notai.llm.presentation.response.LLMOverallStatusResponse;
+import notai.llm.presentation.response.LLMPageResultResponse;
+import notai.llm.presentation.response.LLMPageStatusResponse;
+import notai.llm.presentation.response.LLMSubmitResponse;
+import notai.llm.presentation.response.SummaryAndProblemUpdateResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/ai/llm")
@@ -48,9 +60,17 @@ public class LLMController {
     }
 
     @GetMapping("/results/{documentId}")
-    public ResponseEntity<LLMResultsResponse> findTaskResult(@PathVariable("documentId") Long documentId) {
-        LLMResultsResult result = llmQueryService.findTaskResult(documentId);
-        return ResponseEntity.ok(LLMResultsResponse.from(result));
+    public ResponseEntity<LLMAllPagesResultResponse> findAllPagesResult(@PathVariable("documentId") Long documentId) {
+        LLMAllPagesResult result = llmQueryService.findAllPagesResult(documentId);
+        return ResponseEntity.ok(LLMAllPagesResultResponse.from(result));
+    }
+
+    @GetMapping("/results/{documentId}/{pageNumber}")
+    public ResponseEntity<LLMPageResultResponse> findPageResult(
+            @PathVariable("documentId") Long documentId, @PathVariable("pageNumber") Integer pageNumber) {
+        LLMPageResultCommand command = LLMPageResultCommand.of(documentId, pageNumber);
+        LLMPageResult result = llmQueryService.findPageResult(command);
+        return ResponseEntity.ok(LLMPageResultResponse.from(result));
     }
 
     @PostMapping("/callback")
