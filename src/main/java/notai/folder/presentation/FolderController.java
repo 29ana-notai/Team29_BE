@@ -14,13 +14,12 @@ import notai.folder.presentation.response.FolderFindResponse;
 import notai.folder.presentation.response.FolderMoveResponse;
 import notai.folder.presentation.response.FolderSaveResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/folders")
 @RequiredArgsConstructor
 public class FolderController {

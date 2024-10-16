@@ -14,8 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @ExtendWith(MockitoExtension.class)
 class OCRServiceTest {
@@ -26,7 +24,7 @@ class OCRServiceTest {
     OCRRepository ocrRepository;
 
     @Test
-    void savePdf_success_existsTestPdf() throws IOException {
+    void saveOCR_success_existsTestPdf() throws IOException {
         //given
         Document document = mock(Document.class);
         OCR ocr = mock(OCR.class);
@@ -37,13 +35,5 @@ class OCRServiceTest {
         ocrService.saveOCR(document, saveResult.pdf());
         //then
         verify(ocrRepository, times(43)).save(any(OCR.class));
-
-        deleteFile(saveResult.pdf().toPath());
-    }
-
-    void deleteFile(Path filePath) throws IOException {
-        if (Files.exists(filePath)) {
-            Files.delete(filePath);
-        }
     }
 }
