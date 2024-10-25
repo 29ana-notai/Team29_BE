@@ -15,6 +15,8 @@ import notai.pdf.result.PdfSaveResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DocumentService {
@@ -64,7 +66,10 @@ public class DocumentService {
     public void deleteAllByFolder(
             Folder folder
     ) {
-        documentRepository.deleteAllByFolder(folder);
+        List<Document> documents = documentRepository.findAllByFolderId(folder.getId());
+        for (Document document : documents) {
+            deleteDocument(folder.getId(), document.getId());
+        }
     }
 
     private Document saveAndReturnDocument(
