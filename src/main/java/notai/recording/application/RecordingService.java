@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import notai.common.domain.vo.FilePath;
 import notai.common.exception.type.BadRequestException;
 import notai.common.exception.type.InternalServerErrorException;
-import notai.common.exception.type.NotFoundException;
 import notai.common.utils.AudioDecoder;
 import notai.common.utils.FileManager;
 import notai.document.domain.Document;
@@ -21,6 +20,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static notai.common.exception.ErrorMessages.FILE_SAVE_ERROR;
+import static notai.common.exception.ErrorMessages.INVALID_AUDIO_ENCODING;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -35,9 +37,7 @@ public class RecordingService {
     private String audioBasePath;
 
     public RecordingSaveResult saveRecording(RecordingSaveCommand command) {
-        // TODO: document 개발 코드 올려주시면, getById 로 수정
-        Document foundDocument =
-                documentRepository.findById(command.documentId()).orElseThrow(() -> new NotFoundException(""));
+        Document foundDocument = documentRepository.getById(command.documentId());
 
         Recording recording = new Recording(foundDocument);
         Recording savedRecording = recordingRepository.save(recording);
@@ -55,9 +55,9 @@ public class RecordingService {
             return RecordingSaveResult.of(savedRecording.getId(), foundDocument.getId(), savedRecording.getCreatedAt());
 
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException("오디오 파일이 잘못되었습니다.");
+            throw new BadRequestException(INVALID_AUDIO_ENCODING);
         } catch (IOException e) {
-            throw new InternalServerErrorException("녹음 파일 저장 중 오류가 발생했습니다."); // TODO: 재시도 로직 추가?
+            throw new InternalServerErrorException(FILE_SAVE_ERROR); // TODO: 재시도 로직 추가?
         }
     }
 }

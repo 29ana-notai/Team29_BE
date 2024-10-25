@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import notai.common.domain.RootEntity;
 import notai.common.exception.type.NotFoundException;
 import notai.member.domain.Member;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
+import static notai.common.exception.ErrorMessages.FOLDER_NOT_FOUND;
 
+@Slf4j
 @Entity
 @Table(name = "folder")
 @Getter
@@ -34,7 +35,6 @@ public class Folder extends RootEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_folder_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Folder parentFolder;
 
     public Folder(Member member, String name) {
@@ -58,7 +58,8 @@ public class Folder extends RootEntity<Long> {
 
     public void validateOwner(Long memberId) {
         if (!this.member.getId().equals(memberId)) {
-            throw new NotFoundException("해당 이용자가 보유한 폴더 중 이 폴더가 존재하지 않습니다.");
+            log.info("폴더 소유자가 요청 사용자와 다릅니다.");
+            throw new NotFoundException(FOLDER_NOT_FOUND);
         }
     }
 }

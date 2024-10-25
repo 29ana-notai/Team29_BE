@@ -5,14 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+import static notai.common.exception.ErrorMessages.FOLDER_NOT_FOUND;
+
 public interface FolderRepository extends JpaRepository<Folder, Long> {
     default Folder getById(Long id) {
-        return findById(id).orElseThrow(() -> new NotFoundException("폴더 정보를 찾을 수 없습니다."));
+        return findById(id).orElseThrow(() -> new NotFoundException(FOLDER_NOT_FOUND));
     }
 
     List<Folder> findAllByMemberIdAndParentFolderIsNull(Long memberId);
 
     List<Folder> findAllByMemberIdAndParentFolderId(Long memberId, Long parentFolderId);
 
-    boolean existsByMemberIdAndId(Long memberId, Long id);
+    List<Folder> findAllByParentFolder(Folder parentFolder);
 }
