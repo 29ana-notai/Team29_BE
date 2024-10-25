@@ -8,11 +8,14 @@ import notai.folder.application.FolderService;
 import notai.folder.application.result.FolderFindResult;
 import notai.folder.application.result.FolderMoveResult;
 import notai.folder.application.result.FolderSaveResult;
+import notai.folder.application.result.FolderUpdateResult;
 import notai.folder.presentation.request.FolderMoveRequest;
 import notai.folder.presentation.request.FolderSaveRequest;
+import notai.folder.presentation.request.FolderUpdateRequest;
 import notai.folder.presentation.response.FolderFindResponse;
 import notai.folder.presentation.response.FolderMoveResponse;
 import notai.folder.presentation.response.FolderSaveResponse;
+import notai.folder.presentation.response.FolderUpdateResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +45,15 @@ public class FolderController {
     ) {
         FolderMoveResult folderResult = moveFolderWithRequest(memberId, id, folderMoveRequest);
         FolderMoveResponse response = FolderMoveResponse.from(folderResult);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<FolderUpdateResponse> updateFolder(
+            @Auth Long memberId, @PathVariable Long id, @Valid @RequestBody FolderUpdateRequest folderUpdateRequest
+    ) {
+        FolderUpdateResult folderResult = folderService.updateFolder(memberId, id, folderUpdateRequest);
+        FolderUpdateResponse response = FolderUpdateResponse.from(folderResult);
         return ResponseEntity.ok(response);
     }
 
