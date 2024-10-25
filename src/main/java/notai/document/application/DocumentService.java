@@ -57,6 +57,7 @@ public class DocumentService {
     ) {
         Document document = documentRepository.getById(documentId);
         document.validateDocument(folderId);
+        ocrService.deleteAllByDocument(document);
         documentRepository.delete(document);
     }
 
