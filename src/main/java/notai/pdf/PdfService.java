@@ -23,7 +23,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PdfService {
 
-    private static final String STORAGE_DIR = "src/main/resources/pdf/";
+    private static final String STORAGE_DIR = "/Users/yunjeonghun/Desktop/DevelopProject/KakaoTechCampus/pdf/";
+
 
     public PdfSaveResult savePdf(MultipartFile file) {
         try {
@@ -39,6 +40,7 @@ public class PdfService {
             Integer totalPages = getTotalPages(pdfFile);
             return PdfSaveResult.of(fileName, pdfFile, totalPages);
         } catch (IOException exception) {
+            exception.printStackTrace();
             throw new FileProcessException(FILE_SAVE_ERROR);
         }
     }

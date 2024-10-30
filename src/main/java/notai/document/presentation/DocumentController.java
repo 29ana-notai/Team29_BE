@@ -35,8 +35,10 @@ public class DocumentController {
             @RequestPart MultipartFile pdfFile,
             @RequestPart DocumentSaveRequest documentSaveRequest
     ) {
+
         DocumentSaveResult documentSaveResult;
         if (folderId.equals(ROOT_FOLDER_ID)) {
+            System.out.println("check");
             documentSaveResult = documentService.saveRootDocument(pdfFile, documentSaveRequest);
         } else {
             documentSaveResult = documentService.saveDocument(folderId, pdfFile, documentSaveRequest);
