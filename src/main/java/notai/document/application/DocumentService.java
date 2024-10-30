@@ -29,6 +29,9 @@ public class DocumentService {
     private final FolderRepository folderRepository;
     private final MemberRepository memberRepository;
 
+    private static final Long ROOT_FOLDER_ID = -1L;
+
+
     public DocumentSaveResult saveDocument(
             Long memberId, Long folderId, MultipartFile pdfFile, DocumentSaveRequest documentSaveRequest
     ) {
@@ -51,7 +54,9 @@ public class DocumentService {
             Long folderId, Long documentId, DocumentUpdateRequest documentUpdateRequest
     ) {
         Document document = documentRepository.getById(documentId);
-        document.validateDocument(folderId);
+        if (!folderId.equals(ROOT_FOLDER_ID)) {
+            document.validateDocument(folderId);
+        }
         document.updateName(documentUpdateRequest.name());
         Document savedDocument = documentRepository.save(document);
         return DocumentUpdateResult.of(savedDocument.getId(), savedDocument.getName(), savedDocument.getUrl());
@@ -61,7 +66,9 @@ public class DocumentService {
             Long folderId, Long documentId
     ) {
         Document document = documentRepository.getById(documentId);
-        document.validateDocument(folderId);
+        if (!folderId.equals(ROOT_FOLDER_ID)) {
+            document.validateDocument(folderId);
+        }
         ocrService.deleteAllByDocument(document);
         documentRepository.delete(document);
     }
