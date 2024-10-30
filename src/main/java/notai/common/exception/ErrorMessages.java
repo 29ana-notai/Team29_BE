@@ -9,16 +9,19 @@ public enum ErrorMessages {
     ANNOTATION_NOT_FOUND("주석을 찾을 수 없습니다."),
 
     // document
-    DOCUMENT_NOT_FOUND("자료를 찾을 수 없습니다."), INVALID_DOCUMENT_PAGE("존재하지 않는 페이지 입니다."),
+    DOCUMENT_NOT_FOUND("자료를 찾을 수 없습니다."), 
+    INVALID_DOCUMENT_PAGE("존재하지 않는 페이지 입니다."),
 
     // ocr
-    OCR_RESULT_NOT_FOUND("OCR 데이터를 찾을 수 없습니다."), OCR_TASK_ERROR("PDF 파일을 통해 OCR 작업을 수행하는데 실패했습니다."),
+    OCR_RESULT_NOT_FOUND("OCR 데이터를 찾을 수 없습니다."), 
+    OCR_TASK_ERROR("PDF 파일을 통해 OCR 작업을 수행하는데 실패했습니다."),
 
     // folder
     FOLDER_NOT_FOUND("폴더를 찾을 수 없습니다."),
 
     // llm task
-    LLM_TASK_LOG_NOT_FOUND("AI 작업 기록을 찾을 수 없습니다."), LLM_TASK_RESULT_ERROR("AI 요약 및 문제 생성 중에 문제가 발생했습니다."),
+    LLM_TASK_LOG_NOT_FOUND("AI 작업 기록을 찾을 수 없습니다."), 
+    LLM_TASK_RESULT_ERROR("AI 요약 및 문제 생성 중에 문제가 발생했습니다."),
 
     // problem
     PROBLEM_NOT_FOUND("문제 정보를 찾을 수 없습니다."),
@@ -33,12 +36,15 @@ public enum ErrorMessages {
     RECORDING_NOT_FOUND("녹음 파일을 찾을 수 없습니다."),
 
     // external api call
-    KAKAO_API_ERROR("카카오 API 호출에 예외가 발생했습니다."), AI_SERVER_ERROR("AI 서버 API 호출에 예외가 발생했습니다."),
+    KAKAO_API_ERROR("카카오 API 호출에 예외가 발생했습니다."), 
+    AI_SERVER_ERROR("AI 서버 API 호출에 예외가 발생했습니다."),
 
     // auth
-    INVALID_ACCESS_TOKEN("유효하지 않은 토큰입니다."), INVALID_REFRESH_TOKEN("유요하지 않은 Refresh Token입니다."), EXPIRED_REFRESH_TOKEN(
-            "만료된 Refresh Token입니다."), INVALID_LOGIN_TYPE("지원하지 않는 소셜 로그인 타입입니다."), NOTFOUND_ACCESS_TOKEN(
-            "토큰 정보가 존재하지 않습니다."),
+    INVALID_ACCESS_TOKEN("유효하지 않은 토큰입니다."), 
+    INVALID_REFRESH_TOKEN("유요하지 않은 Refresh Token입니다."), 
+    EXPIRED_REFRESH_TOKEN("만료된 Refresh Token입니다."), 
+    INVALID_LOGIN_TYPE("지원하지 않는 소셜 로그인 타입입니다."), 
+    NOTFOUND_ACCESS_TOKEN("토큰 정보가 존재하지 않습니다."),
 
     // stt
     STT_TASK_NOT_FOUND("음성 인식 작업을 찾을 수 없습니다."),
