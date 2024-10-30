@@ -18,8 +18,7 @@ public class AuthConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor).addPathPatterns("/api/**").excludePathPatterns(
-                "/api/members/oauth/login/**").excludePathPatterns("/api/members/token/refresh").excludePathPatterns(
-                "/api/**");
+                "/api/members/oauth/login/**").excludePathPatterns("/api/members/token/refresh");
     }
 
     @Override

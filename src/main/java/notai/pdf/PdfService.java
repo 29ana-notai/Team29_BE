@@ -40,7 +40,6 @@ public class PdfService {
             Integer totalPages = getTotalPages(pdfFile);
             return PdfSaveResult.of(fileName, pdfFile, totalPages);
         } catch (IOException exception) {
-            exception.printStackTrace();
             throw new FileProcessException(FILE_SAVE_ERROR);
         }
     }

@@ -1,6 +1,7 @@
 package notai.document.presentation;
 
 import lombok.RequiredArgsConstructor;
+import notai.auth.Auth;
 import notai.document.application.DocumentQueryService;
 import notai.document.application.DocumentService;
 import notai.document.application.result.DocumentFindResult;
@@ -31,6 +32,7 @@ public class DocumentController {
 
     @PostMapping
     public ResponseEntity<DocumentSaveResponse> saveDocument(
+            @Auth Long memberId,
             @PathVariable Long folderId,
             @RequestPart MultipartFile pdfFile,
             @RequestPart DocumentSaveRequest documentSaveRequest
@@ -38,10 +40,9 @@ public class DocumentController {
 
         DocumentSaveResult documentSaveResult;
         if (folderId.equals(ROOT_FOLDER_ID)) {
-            System.out.println("check");
-            documentSaveResult = documentService.saveRootDocument(pdfFile, documentSaveRequest);
+            documentSaveResult = documentService.saveRootDocument(memberId, pdfFile, documentSaveRequest);
         } else {
-            documentSaveResult = documentService.saveDocument(folderId, pdfFile, documentSaveRequest);
+            documentSaveResult = documentService.saveDocument(memberId, folderId, pdfFile, documentSaveRequest);
         }
         DocumentSaveResponse response = DocumentSaveResponse.from(documentSaveResult);
         String url = String.format(FOLDER_URL_FORMAT, folderId, response.id());
@@ -59,15 +60,21 @@ public class DocumentController {
 
     @GetMapping
     public ResponseEntity<List<DocumentFindResponse>> getDocuments(
-            @PathVariable Long folderId
+            @Auth Long memberId, @PathVariable Long folderId
     ) {
-        List<DocumentFindResult> documentResults = documentQueryService.findDocuments(folderId);
+        List<DocumentFindResult> documentResults;
+        if (folderId.equals(ROOT_FOLDER_ID)) {
+            documentResults = documentQueryService.findRootDocuments(memberId);
+        } else {
+            documentResults = documentQueryService.findDocuments(folderId);
+        }
+
         List<DocumentFindResponse> responses = documentResults.stream().map(DocumentFindResponse::from).toList();
         return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> getDocuments(
+    public ResponseEntity<Void> deleteDocument(
             @PathVariable Long folderId, @PathVariable Long id
     ) {
         documentService.deleteDocument(folderId, id);
