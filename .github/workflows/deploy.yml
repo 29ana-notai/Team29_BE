@@ -10,9 +10,6 @@ jobs:
   deploy:
     name: Production Deploy
     runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: ./notai
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -38,11 +35,15 @@ jobs:
 
       - name: Build with Gradle
         run: |
+          pwd
+          ls -la
           chmod +x ./gradlew
           ./gradlew clean bootJar
 
-      - name: Deploy with Docker Compose
+      - name: Copy files and Deploy
         run: |
+          cp -r . /home/yugyeom/notai/
+          cd /home/yugyeom/notai
           docker-compose down
           docker-compose up -d --build
         env:
