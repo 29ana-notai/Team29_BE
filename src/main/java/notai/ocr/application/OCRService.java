@@ -10,6 +10,7 @@ import notai.ocr.domain.OCRRepository;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +23,25 @@ public class OCRService {
 
     private final OCRRepository ocrRepository;
 
+    @Value("${tesseract.library.path}")
+    private String libraryPath;
+
+    @Value("${tesseract.data.path}")
+    private String dataPath;
+
+    @Value("${tesseract.language}")
+    private String language;
+
     @Async
     public void saveOCR(
             Document document, File pdfFile
     ) {
         try {
-            // System.setProperty("jna.library.path", "/usr/local/opt/tesseract/lib/");
-            System.setProperty("jna.library.path", "C:\\Program Files\\Tesseract-OCR");
+            System.setProperty("jna.library.path", libraryPath);
 
-            //window, mac -> brew install tesseract, tesseract-lang
             Tesseract tesseract = new Tesseract();
-
-            // tesseract.setDatapath("/usr/local/share/tessdata");
-            tesseract.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
-            tesseract.setLanguage("kor+eng");
+            tesseract.setDatapath(dataPath);
+            tesseract.setLanguage(language);
 
             PDDocument pdDocument = Loader.loadPDF(pdfFile);
             PDFRenderer pdfRenderer = new PDFRenderer(pdDocument);
