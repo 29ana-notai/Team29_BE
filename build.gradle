@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'notai'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2'
 
 java {
     toolchain {
@@ -69,4 +69,12 @@ test {
     useJUnitPlatform {
         excludeTags 'exclude-test'
     }
+}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './Team29_BE_Submodule'
+    include "**"
+    into './src/main/resources'
 }
