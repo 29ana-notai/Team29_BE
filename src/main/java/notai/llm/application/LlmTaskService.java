@@ -8,11 +8,11 @@ import notai.client.ai.AiClient;
 import notai.client.ai.request.LlmTaskRequest;
 import notai.document.domain.Document;
 import notai.document.domain.DocumentRepository;
-import notai.llm.application.command.LLMSubmitCommand;
+import notai.llm.application.command.LlmTaskSubmitCommand;
 import notai.llm.application.command.SummaryAndProblemUpdateCommand;
-import notai.llm.application.result.LLMSubmitResult;
-import notai.llm.domain.LLM;
-import notai.llm.domain.LLMRepository;
+import notai.llm.application.result.LlmTaskSubmitResult;
+import notai.llm.domain.LlmTask;
+import notai.llm.domain.LlmTaskRepository;
 import notai.problem.domain.Problem;
 import notai.problem.domain.ProblemRepository;
 import notai.summary.domain.Summary;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,16 +35,16 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class LLMService {
+public class LlmTaskService {
 
-    private final LLMRepository llmRepository;
+    private final LlmTaskRepository llmTaskRepository;
     private final DocumentRepository documentRepository;
     private final SummaryRepository summaryRepository;
     private final ProblemRepository problemRepository;
     private final AnnotationRepository annotationRepository;
     private final AiClient aiClient;
 
-    public LLMSubmitResult submitTask(LLMSubmitCommand command) {
+    public LlmTaskSubmitResult submitTasks(LlmTaskSubmitCommand command) { // TODO: 페이지 번호 검증 추가
         Document foundDocument = documentRepository.getById(command.documentId());
         List<Annotation> annotations = annotationRepository.findByDocumentId(command.documentId());
 
@@ -51,25 +52,42 @@ public class LLMService {
                 annotations.stream().collect(groupingBy(Annotation::getPageNumber));
 
         command.pages().forEach(pageNumber -> {
-            String annotationContents = annotationsByPage.getOrDefault(
-                    pageNumber,
-                    List.of()
-            ).stream().map(Annotation::getContent).collect(Collectors.joining(", "));
+            submitPageTask(pageNumber, annotationsByPage, foundDocument);
+        });
 
-            // Todo OCR, STT 결과 전달
-            UUID taskId = sendRequestToAIServer("ocrText", "stt", annotationContents);
+        return LlmTaskSubmitResult.of(command.documentId(), LocalDateTime.now());
+    }
+
+    private void submitPageTask(Integer pageNumber, Map<Integer, List<Annotation>> annotationsByPage, Document foundDocument) {
+        String annotationContents = annotationsByPage.getOrDefault(
+                pageNumber,
+                List.of()
+        ).stream().map(Annotation::getContent).collect(Collectors.joining(", "));
+
+        // Todo OCR, STT 결과 전달
+        UUID taskId = sendRequestToAIServer("ocrText", "stt", annotationContents);
+
+        Optional<Summary> foundSummary = summaryRepository.findByDocumentAndPageNumber(foundDocument, pageNumber);
+        Optional<Problem> foundProblem = problemRepository.findByDocumentAndPageNumber(foundDocument, pageNumber);
+
+        if (foundSummary.isEmpty() && foundProblem.isEmpty()) {
             Summary summary = new Summary(foundDocument, pageNumber);
             Problem problem = new Problem(foundDocument, pageNumber);
 
-            LLM taskRecord = new LLM(taskId, summary, problem);
-            llmRepository.save(taskRecord);
-        });
+            LlmTask taskRecord = new LlmTask(taskId, summary, problem);
+            llmTaskRepository.save(taskRecord);
+        }
+        if (foundSummary.isPresent() && foundProblem.isPresent()) {
+            LlmTask foundTaskRecord = llmTaskRepository.getBySummaryAndProblem(foundSummary.get(), foundProblem.get());
+            llmTaskRepository.delete(foundTaskRecord);
 
-        return LLMSubmitResult.of(command.documentId(), LocalDateTime.now());
+            LlmTask taskRecord = new LlmTask(taskId, foundSummary.get(), foundProblem.get());
+            llmTaskRepository.save(taskRecord);
+        }
     }
 
     public Integer updateSummaryAndProblem(SummaryAndProblemUpdateCommand command) {
-        LLM taskRecord = llmRepository.getById(command.taskId());
+        LlmTask taskRecord = llmTaskRepository.getById(command.taskId());
         Summary foundSummary = summaryRepository.getById(taskRecord.getSummary().getId());
         Problem foundProblem = problemRepository.getById(taskRecord.getProblem().getId());
 
@@ -77,11 +95,11 @@ public class LLMService {
         foundSummary.updateContent(command.summary());
         foundProblem.updateContent(command.problem());
 
-        llmRepository.save(taskRecord);
+        llmTaskRepository.save(taskRecord);
         summaryRepository.save(foundSummary);
         problemRepository.save(foundProblem);
 
-        return command.pageNumber();
+        return foundSummary.getPageNumber();
     }
 
     private UUID sendRequestToAIServer(String ocrText, String stt, String keyboardNote) {

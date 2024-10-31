@@ -2,15 +2,15 @@ package notai.llm.application.result;
 
 import notai.llm.domain.TaskStatus;
 
-public record LLMStatusResult(
+public record LlmTaskOverallStatusResult(
         Long documentId,
         TaskStatus overallStatus,
         Integer totalPages,
         Integer completedPages
 ) {
-    public static LLMStatusResult of(
+    public static LlmTaskOverallStatusResult of(
             Long documentId, TaskStatus overallStatus, Integer totalPages, Integer completedPages
     ) {
-        return new LLMStatusResult(documentId, overallStatus, totalPages, completedPages);
+        return new LlmTaskOverallStatusResult(documentId, overallStatus, totalPages, completedPages);
     }
 }
