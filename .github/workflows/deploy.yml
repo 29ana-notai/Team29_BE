@@ -46,5 +46,3 @@ jobs:
           cd /home/yugyeom/notai
           docker-compose down
           docker-compose up -d --build
-        env:
-          SPRING_PROFILES_ACTIVE: prod
