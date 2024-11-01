@@ -48,3 +48,7 @@ token: # todo production에서 secretKey 변경
   secretKey: "ZGQrT0tuZHZkRWRxeXJCamRYMDFKMnBaR2w5WXlyQm9HU2RqZHNha1gycFlkMWpLc0dObw=="
   accessTokenExpirationMillis: 10000000000
   refreshTokenExpirationMillis: 10000000000
+
+file:
+  pdf:
+    basePath: "pdf/"
