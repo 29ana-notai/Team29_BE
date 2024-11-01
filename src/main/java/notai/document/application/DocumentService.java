@@ -51,9 +51,13 @@ public class DocumentService {
     }
 
     public DocumentUpdateResult updateDocument(
-            Long folderId, Long documentId, DocumentUpdateRequest documentUpdateRequest
+            Long memberId, Long folderId, Long documentId, DocumentUpdateRequest documentUpdateRequest
     ) {
         Document document = documentRepository.getById(documentId);
+        Member member = memberRepository.getById(memberId);
+
+        document.validateOwner(member);
+
         if (!folderId.equals(ROOT_FOLDER_ID)) {
             document.validateDocument(folderId);
         }
@@ -63,9 +67,13 @@ public class DocumentService {
     }
 
     public void deleteDocument(
-            Long folderId, Long documentId
+            Long memberId, Long folderId, Long documentId
     ) {
         Document document = documentRepository.getById(documentId);
+        Member member = memberRepository.getById(memberId);
+
+        document.validateOwner(member);
+
         if (!folderId.equals(ROOT_FOLDER_ID)) {
             document.validateDocument(folderId);
         }
@@ -74,11 +82,11 @@ public class DocumentService {
     }
 
     public void deleteAllByFolder(
-            Folder folder
+            Long memberId, Folder folder
     ) {
         List<Document> documents = documentRepository.findAllByFolderId(folder.getId());
         for (Document document : documents) {
-            deleteDocument(folder.getId(), document.getId());
+            deleteDocument(memberId, folder.getId(), document.getId());
         }
     }
 

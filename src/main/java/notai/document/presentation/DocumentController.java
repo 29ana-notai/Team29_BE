@@ -51,9 +51,17 @@ public class DocumentController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<DocumentUpdateResponse> updateDocument(
-            @PathVariable Long folderId, @PathVariable Long id, @RequestBody DocumentUpdateRequest documentUpdateRequest
+            @Auth Long memberId,
+            @PathVariable Long folderId,
+            @PathVariable Long id,
+            @RequestBody DocumentUpdateRequest documentUpdateRequest
     ) {
-        DocumentUpdateResult documentUpdateResult = documentService.updateDocument(folderId, id, documentUpdateRequest);
+        DocumentUpdateResult documentUpdateResult = documentService.updateDocument(
+                memberId,
+                folderId,
+                id,
+                documentUpdateRequest
+        );
         DocumentUpdateResponse response = DocumentUpdateResponse.from(documentUpdateResult);
         return ResponseEntity.ok(response);
     }
@@ -75,9 +83,9 @@ public class DocumentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDocument(
-            @PathVariable Long folderId, @PathVariable Long id
+            @Auth Long memberId, @PathVariable Long folderId, @PathVariable Long id
     ) {
-        documentService.deleteDocument(folderId, id);
+        documentService.deleteDocument(memberId, folderId, id);
         return ResponseEntity.noContent().build();
     }
 }
