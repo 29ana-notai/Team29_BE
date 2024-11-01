@@ -48,7 +48,7 @@ public class OCRService {
             for (int i = 0; i < pdDocument.getNumberOfPages(); i++) {
                 BufferedImage image = pdfRenderer.renderImage(i);
                 String ocrResult = tesseract.doOCR(image);
-                OCR ocr = new OCR(document, i + 1, ocrResult);
+                OCR ocr = new OCR(document, i, ocrResult);
                 ocrRepository.save(ocr);
             }
 
