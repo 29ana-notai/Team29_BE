@@ -42,10 +42,11 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    // 댓글 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<CommentSaveRequest> update(@PathVariable Long id, @RequestBody CommentSaveRequest commentSaveRequest) {
-        commentService.update(id, commentSaveRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody String newContent) {
+        commentService.update(id, newContent);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

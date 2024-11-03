@@ -52,14 +52,13 @@ public class CommentService {
         commentRepository.save(comment);
     }
     @Transactional
-    public void update(Long id, CommentSaveRequest commentSaveRequest) {
-    Comment comment = commentRepository.findById(id)
-            .orElseThrow(()-> new IllegalArgumentException("댓글 수정 실패!"+
-                    "대상 댓글이 없습니다."));
-    comment.patch(commentSaveRequest);
-    Comment updated = commentRepository.save(comment);
-
+    public void update(Long id, String newContent) {
+        Comment comment = commentRepository.findById(id)
+                                           .orElseThrow(() -> new IllegalArgumentException("댓글 수정 실패! 대상 댓글이 없습니다."));
+        comment.patch(newContent);  // 필요한 값만 전달
+        commentRepository.save(comment);
     }
+
 
     @Transactional
     public void delete(Long id) {
