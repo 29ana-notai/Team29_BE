@@ -12,6 +12,7 @@ import notai.document.presentation.request.DocumentUpdateRequest;
 import notai.document.presentation.response.DocumentFindResponse;
 import notai.document.presentation.response.DocumentSaveResponse;
 import notai.document.presentation.response.DocumentUpdateResponse;
+import notai.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,7 @@ public class DocumentController {
 
     @PostMapping
     public ResponseEntity<DocumentSaveResponse> saveDocument(
-            @Auth Long memberId,
+            @Auth Member member,
             @PathVariable Long folderId,
             @RequestPart MultipartFile pdfFile,
             @RequestPart DocumentSaveRequest documentSaveRequest
@@ -40,9 +41,9 @@ public class DocumentController {
 
         DocumentSaveResult documentSaveResult;
         if (folderId.equals(ROOT_FOLDER_ID)) {
-            documentSaveResult = documentService.saveRootDocument(memberId, pdfFile, documentSaveRequest);
+            documentSaveResult = documentService.saveRootDocument(member, pdfFile, documentSaveRequest);
         } else {
-            documentSaveResult = documentService.saveDocument(memberId, folderId, pdfFile, documentSaveRequest);
+            documentSaveResult = documentService.saveDocument(member, folderId, pdfFile, documentSaveRequest);
         }
         DocumentSaveResponse response = DocumentSaveResponse.from(documentSaveResult);
         String url = String.format(FOLDER_URL_FORMAT, folderId, response.id());
@@ -51,13 +52,13 @@ public class DocumentController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<DocumentUpdateResponse> updateDocument(
-            @Auth Long memberId,
+            @Auth Member member,
             @PathVariable Long folderId,
             @PathVariable Long id,
             @RequestBody DocumentUpdateRequest documentUpdateRequest
     ) {
         DocumentUpdateResult documentUpdateResult = documentService.updateDocument(
-                memberId,
+                member,
                 folderId,
                 id,
                 documentUpdateRequest
@@ -68,11 +69,11 @@ public class DocumentController {
 
     @GetMapping
     public ResponseEntity<List<DocumentFindResponse>> getDocuments(
-            @Auth Long memberId, @PathVariable Long folderId
+            @Auth Member member, @PathVariable Long folderId
     ) {
         List<DocumentFindResult> documentResults;
         if (folderId.equals(ROOT_FOLDER_ID)) {
-            documentResults = documentQueryService.findRootDocuments(memberId);
+            documentResults = documentQueryService.findRootDocuments(member);
         } else {
             documentResults = documentQueryService.findDocuments(folderId);
         }
@@ -83,9 +84,9 @@ public class DocumentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDocument(
-            @Auth Long memberId, @PathVariable Long folderId, @PathVariable Long id
+            @Auth Member member, @PathVariable Long folderId, @PathVariable Long id
     ) {
-        documentService.deleteDocument(memberId, folderId, id);
+        documentService.deleteDocument(member, folderId, id);
         return ResponseEntity.noContent().build();
     }
 }
