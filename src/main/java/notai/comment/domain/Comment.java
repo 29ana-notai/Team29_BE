@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import notai.comment.presentation.request.CommentSaveRequest;
+import notai.comment.presentation.request.CommentUpdateRequest;
 import notai.common.domain.RootEntity;
 import notai.member.domain.Member;
 import notai.post.domain.Post;
@@ -76,8 +77,9 @@ public class Comment extends RootEntity<Long> {
         }
     }
 
-    public void patch(String newContent) {
-        if (newContent != null) {
+    public void patch(CommentUpdateRequest commentUpdateRequest) {
+        if (commentUpdateRequest != null) {
+            String newContent = commentUpdateRequest.contents();
             validateContent(newContent);
             this.content = newContent;
         }

@@ -1,7 +1,6 @@
 package notai.comment.presentation.request;
 
-
-public record CommentSaveRequest(
+public record CommentUpdateRequest(
         Long id,
         Long postId,
         Long memberId,

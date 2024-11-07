@@ -2,6 +2,7 @@ package notai.comment.presentation;
 
 import notai.comment.application.CommentService;
 import notai.comment.presentation.request.CommentSaveRequest;
+import notai.comment.presentation.request.CommentUpdateRequest;
 import notai.comment.presentation.response.CommentFindResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,8 +45,8 @@ public class CommentController {
 
     // 댓글 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody String newContent) {
-        commentService.update(id, newContent);
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody CommentUpdateRequest commentUpdateRequest) {
+        commentService.update(id, commentUpdateRequest);
         return ResponseEntity.ok().build();
     }
 

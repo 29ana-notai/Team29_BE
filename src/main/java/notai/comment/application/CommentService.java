@@ -5,14 +5,12 @@ import notai.comment.application.result.CommentFindResult;
 import notai.comment.domain.Comment;
 import notai.comment.domain.CommentRepository;
 import notai.comment.presentation.request.CommentSaveRequest;
+import notai.comment.presentation.request.CommentUpdateRequest;
 import notai.comment.presentation.response.CommentFindResponse;
 import notai.member.domain.Member;
 import notai.member.domain.MemberRepository;
-import notai.post.application.result.PostFindResult;
-import notai.post.application.result.PostSaveResult;
 import notai.post.domain.Post;
 import notai.post.domain.PostRepository;
-import notai.post.presentation.response.PostFindResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,10 +50,10 @@ public class CommentService {
         commentRepository.save(comment);
     }
     @Transactional
-    public void update(Long id, String newContent) {
+    public void update(Long id, CommentUpdateRequest commentUpdateRequest) {
         Comment comment = commentRepository.findById(id)
                                            .orElseThrow(() -> new IllegalArgumentException("댓글 수정 실패! 대상 댓글이 없습니다."));
-        comment.patch(newContent);  // 필요한 값만 전달
+        comment.patch(commentUpdateRequest);  // 필요한 값만 전달
         commentRepository.save(comment);
     }
 
