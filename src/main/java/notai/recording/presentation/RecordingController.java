@@ -23,7 +23,9 @@ public class RecordingController {
 
     @PostMapping
     public ResponseEntity<RecordingSaveResponse> saveRecording(
-            @Auth Member member, @PathVariable("documentId") Long documentId, @RequestBody @Valid RecordingSaveRequest request
+            @Auth Member member,
+            @PathVariable("documentId") Long documentId,
+            @RequestBody @Valid RecordingSaveRequest request
     ) {
         RecordingSaveCommand command = request.toCommand(documentId);
         RecordingSaveResult result = recordingService.saveRecording(member, command);

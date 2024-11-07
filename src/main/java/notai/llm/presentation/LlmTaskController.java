@@ -42,7 +42,9 @@ public class LlmTaskController {
 
     @GetMapping("/status/{documentId}/{pageNumber}")
     public ResponseEntity<LlmTaskPageStatusResponse> fetchPageStatus(
-            @Auth Member member, @PathVariable("documentId") Long documentId, @PathVariable("pageNumber") Integer pageNumber
+            @Auth Member member,
+            @PathVariable("documentId") Long documentId,
+            @PathVariable("pageNumber") Integer pageNumber
     ) {
         LlmTaskPageStatusCommand command = LlmTaskPageStatusCommand.of(documentId, pageNumber);
         LlmTaskPageStatusResult result = llmTaskQueryService.fetchPageStatus(member, command);
@@ -59,7 +61,9 @@ public class LlmTaskController {
 
     @GetMapping("/results/{documentId}/{pageNumber}")
     public ResponseEntity<LlmTaskPageResultResponse> findPageResult(
-            @Auth Member member, @PathVariable("documentId") Long documentId, @PathVariable("pageNumber") Integer pageNumber
+            @Auth Member member,
+            @PathVariable("documentId") Long documentId,
+            @PathVariable("pageNumber") Integer pageNumber
     ) {
         LlmTaskPageResultCommand command = LlmTaskPageResultCommand.of(documentId, pageNumber);
         LlmTaskPageResult result = llmTaskQueryService.findPageResult(member, command);

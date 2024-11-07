@@ -20,7 +20,9 @@ public class PageRecordingController {
 
     @PostMapping
     public ResponseEntity<Void> savePageRecording(
-            @Auth Member member, @PathVariable("documentId") Long documentId, @RequestBody PageRecordingSaveRequest request
+            @Auth Member member,
+            @PathVariable("documentId") Long documentId,
+            @RequestBody PageRecordingSaveRequest request
     ) {
         PageRecordingSaveCommand command = request.toCommand(documentId);
         pageRecordingService.savePageRecording(member, command);
