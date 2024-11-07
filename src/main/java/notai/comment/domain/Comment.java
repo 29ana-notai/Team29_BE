@@ -77,9 +77,8 @@ public class Comment extends RootEntity<Long> {
         }
     }
 
-    public void patch(CommentUpdateRequest commentUpdateRequest) {
-        if (commentUpdateRequest != null) {
-            String newContent = commentUpdateRequest.contents();
+    public void patch(String newContent) {
+        if (newContent!= null) {
             validateContent(newContent);
             this.content = newContent;
         }

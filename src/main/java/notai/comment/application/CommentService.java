@@ -53,7 +53,9 @@ public class CommentService {
     public void update(Long id, CommentUpdateRequest commentUpdateRequest) {
         Comment comment = commentRepository.findById(id)
                                            .orElseThrow(() -> new IllegalArgumentException("댓글 수정 실패! 대상 댓글이 없습니다."));
-        comment.patch(commentUpdateRequest);  // 필요한 값만 전달
+
+        String newContent = commentUpdateRequest.contents();
+        comment.patch(newContent);  // 필요한 값만 전달
         commentRepository.save(comment);
     }
 
