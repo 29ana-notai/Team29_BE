@@ -16,9 +16,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
-    public PostSaveResult savePost(PostSaveCommand postSaveCommand) {
-        Member member = memberRepository.getById(postSaveCommand.memberId());
-        Post post = new Post(member, postSaveCommand.title(), postSaveCommand.content());
+    public PostSaveResult savePost(Long memberId, PostSaveCommand postSaveCommand) {
+        Member member = memberRepository.getById(memberId);
+        Post post = new Post( member, postSaveCommand.title(), postSaveCommand.content());
         Post savedPost = postRepository.save(post);
         return PostSaveResult.of(savedPost.getId(), savedPost.getTitle());
     }

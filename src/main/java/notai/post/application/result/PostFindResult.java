@@ -2,15 +2,10 @@ package notai.post.application.result;
 
 import notai.post.domain.Post;
 
-import java.time.LocalDateTime;
-
 public record PostFindResult(
         Long id,
-        Long memberId,
         String title,
-        String contents,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        String content
 
 ) {
     public static PostFindResult of(
@@ -18,11 +13,8 @@ public record PostFindResult(
     ) {
         return new PostFindResult(
                 post.getId(),
-                post.getMember().getId(),
                 post.getTitle(),
-                post.getContents(),
-                post.getCreatedAt(),
-                post.getUpdatedAt()
+                post.getContent()
         );
     }
 }
