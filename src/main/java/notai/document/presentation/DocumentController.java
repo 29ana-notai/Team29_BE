@@ -1,5 +1,7 @@
 package notai.document.presentation;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
 import notai.auth.Auth;
 import notai.document.application.DocumentQueryService;
@@ -13,6 +15,7 @@ import notai.document.presentation.response.DocumentFindResponse;
 import notai.document.presentation.response.DocumentSaveResponse;
 import notai.document.presentation.response.DocumentUpdateResponse;
 import notai.member.domain.Member;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +34,11 @@ public class DocumentController {
     private static final Long ROOT_FOLDER_ID = -1L;
     private static final String FOLDER_URL_FORMAT = "/api/folders/%s/documents/%s";
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DocumentSaveResponse> saveDocument(
             @Auth Member member,
             @PathVariable Long folderId,
+            @Parameter(content = @Content(mediaType = MediaType.APPLICATION_PDF_VALUE))
             @RequestPart MultipartFile pdfFile,
             @RequestPart DocumentSaveRequest documentSaveRequest
     ) {

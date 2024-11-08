@@ -83,7 +83,7 @@ public class AnnotationController {
             @Auth Member member, @PathVariable Long documentId, @PathVariable Long annotationId
     ) {
 
-        annotationService.deleteAnnotation(member, documentId, annotationId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        annotationService.deleteAnnotation(documentId, annotationId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
