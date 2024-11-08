@@ -32,11 +32,11 @@ public class Post extends RootEntity<Long> {
 
     @NotNull
     @Column(length = 255)
-    private String contents;
+    private String content;
 
-    public Post(Member member, String title, String contents) {
+    public Post(Member memeber, String title, String content) {
         this.member = member;
         this.title = title;
-        this.contents = contents;
+        this.content = content;
     }
 }
