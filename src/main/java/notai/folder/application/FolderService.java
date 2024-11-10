@@ -12,11 +12,13 @@ import notai.folder.presentation.request.FolderSaveRequest;
 import notai.folder.presentation.request.FolderUpdateRequest;
 import notai.member.domain.Member;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FolderService {
 
     private final FolderRepository folderRepository;

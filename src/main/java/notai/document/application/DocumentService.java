@@ -14,12 +14,14 @@ import notai.ocr.application.OCRService;
 import notai.pdf.PdfService;
 import notai.pdf.result.PdfSaveResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DocumentService {
 
     private final PdfService pdfService;

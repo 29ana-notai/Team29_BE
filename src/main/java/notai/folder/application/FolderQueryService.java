@@ -6,11 +6,13 @@ import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
 import notai.member.domain.Member;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FolderQueryService {
 
     private final FolderRepository folderRepository;
