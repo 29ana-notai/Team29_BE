@@ -38,8 +38,8 @@ public class DocumentController {
     public ResponseEntity<DocumentSaveResponse> saveDocument(
             @Auth Member member,
             @PathVariable Long folderId,
-            @Parameter(content = @Content(mediaType = MediaType.APPLICATION_PDF_VALUE))
-            @RequestPart MultipartFile pdfFile,
+            @Parameter(content = @Content(mediaType = MediaType.APPLICATION_PDF_VALUE)) @RequestPart
+            MultipartFile pdfFile,
             @RequestPart DocumentSaveRequest documentSaveRequest
     ) {
 
@@ -61,8 +61,7 @@ public class DocumentController {
             @PathVariable Long id,
             @RequestBody DocumentUpdateRequest documentUpdateRequest
     ) {
-        DocumentUpdateResult documentUpdateResult = documentService.updateDocument(
-                member,
+        DocumentUpdateResult documentUpdateResult = documentService.updateDocument(member,
                 folderId,
                 id,
                 documentUpdateRequest
@@ -77,7 +76,7 @@ public class DocumentController {
     ) {
         List<DocumentFindResult> documentResults;
         if (folderId.equals(ROOT_FOLDER_ID)) {
-            documentResults = documentQueryService.findRootDocuments(member);
+            documentResults = documentQueryService.findRootDocuments(member.getId());
         } else {
             documentResults = documentQueryService.findDocuments(folderId);
         }

@@ -16,18 +16,19 @@ import java.util.List;
 public class FolderQueryService {
 
     private final FolderRepository folderRepository;
+    private static final Long ROOT_ID = -1L;
 
-    public List<FolderFindResult> getFolders(Member member, Long parentFolderId) {
-        List<Folder> folders = getFoldersWithMemberAndParent(member, parentFolderId);
+    public List<FolderFindResult> getFolders(Member member, Long folderId) {
+        List<Folder> folders = getFoldersWithMemberAndParent(member, folderId);
         // document read
         return folders.stream().map(this::getFolderResult).toList();
     }
 
-    private List<Folder> getFoldersWithMemberAndParent(Member member, Long parentFolderId) {
-        if (parentFolderId == null) {
+    private List<Folder> getFoldersWithMemberAndParent(Member member, Long folderId) {
+        if (folderId == null || folderId.equals(ROOT_ID)) {
             return folderRepository.findAllByMemberIdAndParentFolderIsNull(member.getId());
         }
-        return folderRepository.findAllByMemberIdAndParentFolderId(member.getId(), parentFolderId);
+        return folderRepository.findAllByMemberIdAndParentFolderId(member.getId(), folderId);
     }
 
     private FolderFindResult getFolderResult(Folder folder) {
