@@ -8,9 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import notai.common.domain.RootEntity;
-import static notai.common.exception.ErrorMessages.DOCUMENT_NOT_FOUND;
-import static notai.common.exception.ErrorMessages.INVALID_DOCUMENT_PAGE;
+import notai.common.exception.ErrorMessages;
+import static notai.common.exception.ErrorMessages.*;
 import notai.common.exception.type.NotFoundException;
+import notai.common.exception.type.UnAuthorizedException;
 import notai.folder.domain.Folder;
 import notai.member.domain.Member;
 
@@ -74,5 +75,11 @@ public class Document extends RootEntity<Long> {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void validateOwner(Member member) {
+        if (!this.member.equals(member)) {
+            throw new UnAuthorizedException(UNAUTHORIZED_DOCUMENT_ACCESS);
+        }
     }
 }

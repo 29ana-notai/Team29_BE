@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.ByteArrayResource;
 
+import java.io.InputStream;
 import java.util.UUID;
 
 class AiClientTest {
@@ -41,16 +42,16 @@ class AiClientTest {
     @Test
     void STT_테스크_전달_테스트() {
         // Given
-        MultipartFile mockAudioFile = mock(MultipartFile.class);
+        ByteArrayResource byteArrayResource = mock(ByteArrayResource.class);
         UUID expectedTaskId = UUID.randomUUID();
         TaskResponse expectedResponse = new TaskResponse(expectedTaskId, "stt");
-        when(aiClient.submitSttTask(mockAudioFile)).thenReturn(expectedResponse);
+        when(aiClient.submitSttTask(byteArrayResource)).thenReturn(expectedResponse);
 
         // When
-        TaskResponse response = aiClient.submitSttTask(mockAudioFile);
+        TaskResponse response = aiClient.submitSttTask(byteArrayResource);
 
         // Then
         assertEquals(expectedResponse, response);
-        verify(aiClient, times(1)).submitSttTask(mockAudioFile);
+        verify(aiClient, times(1)).submitSttTask(byteArrayResource);
     }
 }
