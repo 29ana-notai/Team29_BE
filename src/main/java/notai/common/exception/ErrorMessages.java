@@ -16,9 +16,7 @@ public enum ErrorMessages {
     OCR_RESULT_NOT_FOUND("OCR 데이터를 찾을 수 없습니다."), OCR_TASK_ERROR("PDF 파일을 통해 OCR 작업을 수행하는데 실패했습니다."),
 
     // folder
-    FOLDER_NOT_FOUND("폴더를 찾을 수 없습니다."), FOLDER_AND_DOCUMENT_INVALID_RESPONSE("허용되지 않는 타입입니다."),
-
-    // llm task
+    FOLDER_NOT_FOUND("폴더를 찾을 수 없습니다."), FOLDER_AND_DOCUMENT_INVALID_RESPONSE("허용하지 않는 데이터 타입입니다."), // llm task
     LLM_TASK_LOG_NOT_FOUND("AI 작업 기록을 찾을 수 없습니다."), LLM_TASK_RESULT_ERROR("AI 요약 및 문제 생성 중에 문제가 발생했습니다."),
 
     // problem

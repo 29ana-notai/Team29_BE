@@ -6,8 +6,6 @@ import notai.annotation.application.AnnotationQueryService;
 import notai.annotation.application.AnnotationService;
 import notai.annotation.presentation.request.CreateAnnotationRequest;
 import notai.annotation.presentation.response.AnnotationResponse;
-import notai.auth.Auth;
-import notai.member.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +22,10 @@ public class AnnotationController {
 
     @PostMapping
     public ResponseEntity<AnnotationResponse> createAnnotation(
-            @Auth Member member, @PathVariable Long documentId, @RequestBody @Valid CreateAnnotationRequest request
+            @PathVariable Long documentId, @RequestBody @Valid CreateAnnotationRequest request
     ) {
 
-        AnnotationResponse response = annotationService.createAnnotation(
-                member,
-                documentId,
+        AnnotationResponse response = annotationService.createAnnotation(documentId,
                 request.pageNumber(),
                 request.x(),
                 request.y(),
@@ -44,11 +40,10 @@ public class AnnotationController {
 
     @GetMapping
     public ResponseEntity<List<AnnotationResponse>> getAnnotations(
-            @Auth Member member, @PathVariable Long documentId, @RequestParam List<Integer> pageNumbers
+            @PathVariable Long documentId, @RequestParam List<Integer> pageNumbers
     ) {
 
         List<AnnotationResponse> response = annotationQueryService.getAnnotationsByDocumentAndPageNumbers(
-                member,
                 documentId,
                 pageNumbers
         );
@@ -58,15 +53,12 @@ public class AnnotationController {
 
     @PutMapping("/{annotationId}")
     public ResponseEntity<AnnotationResponse> updateAnnotation(
-            @Auth Member member,
             @PathVariable Long documentId,
             @PathVariable Long annotationId,
             @RequestBody @Valid CreateAnnotationRequest request
     ) {
 
-        AnnotationResponse response = annotationService.updateAnnotation(
-                member,
-                documentId,
+        AnnotationResponse response = annotationService.updateAnnotation(documentId,
                 annotationId,
                 request.x(),
                 request.y(),
@@ -80,10 +72,10 @@ public class AnnotationController {
 
     @DeleteMapping("/{annotationId}")
     public ResponseEntity<Void> deleteAnnotation(
-            @Auth Member member, @PathVariable Long documentId, @PathVariable Long annotationId
+            @PathVariable Long documentId, @PathVariable Long annotationId
     ) {
 
-        annotationService.deleteAnnotation(member, documentId, annotationId);
+        annotationService.deleteAnnotation(documentId, annotationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
