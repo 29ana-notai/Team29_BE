@@ -55,4 +55,19 @@ public class SttTaskQueryService {
         }
         return SttTaskOverallStatusResult.of(documentId, IN_PROGRESS, totalPages, completedPages);
     }
+
+    public SttTaskPageStatusResult fetchPageStatus(Long memberId, SttTaskPageStatusCommand command) {
+        Document foundDocument = documentRepository.getById(command.documentId());
+        Member member = memberRepository.getById(memberId);
+        foundDocument.validateOwner(member);
+        foundDocument.validatePageNumber(command.pageNumber());
+
+        TaskStatus status = sttTaskRepository.getTaskStatusByDocumentIdAndPageNumber(
+            command.documentId(),
+            command.pageNumber()
+        );
+
+        // STT 페이지별 결과에 대한 상태는 존재의 유무로만 판단 가능하므로 없을경우 IN_PROGRESS 으로 통일
+        return SttTaskPageStatusResult.of(command.pageNumber(), Objects.requireNonNullElse(status, IN_PROGRESS));
+    }
 }
