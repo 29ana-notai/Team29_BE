@@ -1,5 +1,7 @@
 package notai.folder.application;
 
+import static notai.common.exception.ErrorMessages.FOLDER_NOT_FOUND;
+import notai.common.exception.type.NotFoundException;
 import notai.folder.application.result.FolderFindResult;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
@@ -16,7 +18,6 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,14 +71,10 @@ class FolderQueryServiceTest {
     @DisplayName("존재하지 않는 부모폴더의 ID로 조회를 요청하면 빈 배열을 반환한다.")
     void getFolders_fail_noExistsParentFolderId() {
         //given
-        List<Folder> expectedResults = new ArrayList<>();
-
-        when(folderRepository.findAllByMemberIdAndParentFolderId(any(Long.class), any(Long.class))).thenReturn(
-                expectedResults);
-        //when
-        List<FolderFindResult> folders = folderQueryService.getFolders(member.getId(), 10000L);
-        //then
-        Assertions.assertThat(folders.size()).isEqualTo(0);
+        when(folderRepository.existsById(any(Long.class))).thenThrow(new NotFoundException(FOLDER_NOT_FOUND));
+        //when, then
+        Assertions.assertThatThrownBy(() -> folderQueryService.getFolders(member.getId(), 10000L)).isInstanceOf(
+                NotFoundException.class);
     }
 
     private Folder getFolder(Long id, Folder parentFolder, String name) {
