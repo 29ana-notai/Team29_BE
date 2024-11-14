@@ -7,12 +7,10 @@ import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
 import notai.member.domain.Member;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
@@ -30,11 +28,6 @@ class FolderQueryServiceTest {
 
     @Mock
     private Member member;
-
-    @BeforeEach
-    void setUp() {
-        given(member.getId()).willReturn(1L);
-    }
 
     @Test
     @DisplayName("folderId를 -1로 조회하면 루트폴더가 조회된다.")
@@ -54,13 +47,17 @@ class FolderQueryServiceTest {
     @DisplayName("부모폴더의 ID를 통해 요청을 하게 되면 해당 부모폴더와 연결된 폴더가 조회된다.")
     void getFolders_success() {
         //given
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
+
         Folder folder1 = getFolder(1L, null, "루트폴더");
-        Folder folder2 = getFolder(2L, folder1, "서브폴더");
-        Folder folder3 = getFolder(3L, folder1, "서브폴더");
+        Folder folder2 = getFolder(2L, folder1, "서브폴더", member);
+        Folder folder3 = getFolder(3L, folder1, "서브폴더", member);
         List<Folder> expectedResults = List.of(folder2, folder3);
 
         when(folderRepository.findAllByMemberIdAndParentFolderId(any(Long.class), any(Long.class))).thenReturn(
                 expectedResults);
+        when(folderRepository.existsById(any(Long.class))).thenReturn(true);
         //when
         List<FolderFindResult> folders = folderQueryService.getFolders(member.getId(), 1L);
         //then
@@ -79,6 +76,12 @@ class FolderQueryServiceTest {
 
     private Folder getFolder(Long id, Folder parentFolder, String name) {
         Member member = mock(Member.class);
+        Folder folder = spy(new Folder(member, name, parentFolder));
+        lenient().when(folder.getId()).thenReturn(id);
+        return folder;
+    }
+
+    private Folder getFolder(Long id, Folder parentFolder, String name, Member member) {
         Folder folder = spy(new Folder(member, name, parentFolder));
         lenient().when(folder.getId()).thenReturn(id);
         return folder;

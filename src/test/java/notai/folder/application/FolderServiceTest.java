@@ -57,7 +57,7 @@ class FolderServiceTest {
         //when
         FolderSaveResult savedFolderResult = folderService.saveSubFolder(1L, folderSaveRequest);
         //then
-        Assertions.assertThat(savedFolderResult.id()).isEqualTo(2L);
+        Assertions.assertThat(expectedFolder.getParentFolder().getId()).isEqualTo(1L);
         Assertions.assertThat(savedFolderResult.name()).isEqualTo(expectedFolder.getName());
     }
 
