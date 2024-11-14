@@ -2,9 +2,11 @@ package notai.folder.application;
 
 import static notai.common.exception.ErrorMessages.FOLDER_NOT_FOUND;
 import notai.common.exception.type.NotFoundException;
+import notai.folder.application.result.FolderMoveResult;
 import notai.folder.application.result.FolderSaveResult;
 import notai.folder.domain.Folder;
 import notai.folder.domain.FolderRepository;
+import notai.folder.presentation.request.FolderMoveRequest;
 import notai.folder.presentation.request.FolderSaveRequest;
 import notai.member.domain.Member;
 import notai.member.domain.MemberRepository;
@@ -69,8 +71,53 @@ class FolderServiceTest {
                 NotFoundException.class);
     }
 
+    @Test
+    @DisplayName("일반폴더를 생성한 후 루트로 이동할 때 memberId가 동일하면 성공한다.")
+    void moveRootFolder_success() {
+        Member member = mock(Member.class);
+        Folder parentFolder = getFolder(1L, null, "루트폴더", member);
+        Folder subFolder = getFolder(2L, parentFolder, "서브폴더", member);
+
+        when(memberRepository.getById(anyLong())).thenReturn(member);
+        when(folderRepository.getById(anyLong())).thenReturn(subFolder);
+        when(member.getId()).thenReturn(1L);
+        when(folderRepository.save(any(Folder.class))).thenReturn(subFolder);
+        //when
+        FolderMoveResult folderMoveResult = folderService.moveRootFolder(1L, 2L);
+        //then
+        Assertions.assertThat(folderMoveResult.id()).isEqualTo(2L);
+        Assertions.assertThat(subFolder.getParentFolder()).isNull();
+    }
+
+    @Test
+    @DisplayName("루트폴더에서 다른 폴더의 하위 폴더로 이동할 때 memberId가 동일하면 성공한다.")
+    void moveFolder_success() {
+        FolderMoveRequest folderMoveRequest = new FolderMoveRequest(1L);
+
+        Member member = mock(Member.class);
+        Folder folder1 = getFolder(1L, null, "폴더1", member);
+        Folder folder2 = getFolder(2L, null, "폴더2", member);
+
+        when(memberRepository.getById(anyLong())).thenReturn(member);
+        when(folderRepository.getById(1L)).thenReturn(folder1);
+        when(folderRepository.getById(2L)).thenReturn(folder2);
+        when(member.getId()).thenReturn(1L);
+        when(folderRepository.save(any(Folder.class))).thenReturn(folder2);
+        //when
+        FolderMoveResult folderMoveResult = folderService.moveNewParentFolder(1L, 2L, folderMoveRequest);
+        //then
+        Assertions.assertThat(folderMoveResult.id()).isEqualTo(2L);
+        Assertions.assertThat(folder2.getParentFolder().getId()).isEqualTo(1L);
+    }
+
     private Folder getFolder(Long id, Folder parentFolder, String name) {
         Member member = mock(Member.class);
+        Folder folder = spy(new Folder(member, name, parentFolder));
+        lenient().when(folder.getId()).thenReturn(id);
+        return folder;
+    }
+
+    private Folder getFolder(Long id, Folder parentFolder, String name, Member member) {
         Folder folder = spy(new Folder(member, name, parentFolder));
         lenient().when(folder.getId()).thenReturn(id);
         return folder;

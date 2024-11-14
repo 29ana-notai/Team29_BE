@@ -89,10 +89,10 @@ public class FolderController {
     }
 
     private FolderMoveResult moveFolderWithRequest(Long memberId, Long id, FolderMoveRequest folderMoveRequest) {
-        if (folderMoveRequest.targetFolderId() != null) {
-            return folderService.moveNewParentFolder(memberId, id, folderMoveRequest);
+        if (folderMoveRequest.targetFolderId() == null || folderMoveRequest.targetFolderId().equals(ROOT_ID)) {
+            return folderService.moveRootFolder(memberId, id);
         }
-        return folderService.moveRootFolder(memberId, id);
+        return folderService.moveNewParentFolder(memberId, id, folderMoveRequest);
     }
 
     private void insertFolderFindResponse(List<FindResponseWrapper> result, Long memberId, Long folderId) {
