@@ -82,10 +82,10 @@ public class FolderController {
     }
 
     private FolderSaveResult saveFolderResult(Long memberId, FolderSaveRequest folderSaveRequest) {
-        if (folderSaveRequest.parentFolderId() != null) {
-            return folderService.saveSubFolder(memberId, folderSaveRequest);
+        if (folderSaveRequest.parentFolderId() == null || folderSaveRequest.parentFolderId().equals(ROOT_ID)) {
+            return folderService.saveRootFolder(memberId, folderSaveRequest);
         }
-        return folderService.saveRootFolder(memberId, folderSaveRequest);
+        return folderService.saveSubFolder(memberId, folderSaveRequest);
     }
 
     private FolderMoveResult moveFolderWithRequest(Long memberId, Long id, FolderMoveRequest folderMoveRequest) {
